@@ -1,0 +1,43 @@
+
+
+.admin_balance_cards {
+    /* border: 1px solid rgba(0, 0, 0, 0.15); */
+    box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1), 0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1), 0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12), 0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
+    border-radius: 0.5rem;
+}
+
+.admin_balance_cards .plan_card_icons i {
+    border-radius: 4px;
+}
+
+.admin_balance_cards .card_subheader {
+    height: 10px;
+    padding-top: 3px;
+    font-size: 12px;
+    padding-bottom: 4px;
+}
+
+.admin_balance_cards .card_header {
+    height: 4px;
+    line-height: 15px;
+    padding-top: 4px;
+    font-size: 17px;
+}
+
+.admin_balance_cards .plan_texts {
+    padding-left: 20px;
+}
+
+.admin_balance_cards .plan_texts .card_header {
+    line-height: 0;
+    font-size: 20px;
+}
+
+.admin_balance_cards .plan_texts  p{
+    line-height: 0;
+    font-size: 14px;
+}
+
+.table-responsive i {
+    border-radius: 7px;
+}
