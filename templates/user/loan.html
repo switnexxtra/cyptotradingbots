@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+{% block head %}
+<!-- Bootstrap Links -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+<!-- <link href="{{ url_for('static', filename='css/kyc.css') }}" rel="stylesheet"> -->
+
+<!-- Customized Bootstrap Stylesheet -->
+<!-- <link href="{{ url_for('static', filename='css/bootstrap.min1.css') }}" rel="stylesheet"> -->
+{% endblock %}
+{% block content %}
+
+    
+    <div class="wrapper d-flex align-items-stretch">
+
+        <nav id="sidebar" class="active">
+            <h1><a href="{{ url_for('main.home') }}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none"><span class="fa fa-home"></span> Home</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.investment') }}" class="text-decoration-none"><span class="fa fa-handshake"></span>
+                        Investment</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.loan') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.transactions') }}" class="text-decoration-none"><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.profile') }}" class="text-decoration-none"><span class="fa fa-user-md"></span> Profile</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.kyc') }}" class="text-decoration-none"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('user.support') }}" class="text-decoration-none"><span class="fa fa-support"></span> Support</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.logout') }}" class="text-decoration-none"><span class="fa fa-sign-out"></span> Logout</a>
+                </li>
+            </ul>
+
+        </nav>
+
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+            {% include 'user/header.html' %}
+
+            <!-- <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }} </span></p>
+                </div>
+            
+                <div class="d-flex align-items-center ms-auto">
+                    <!-- Notification Bell with Dropdown 
+                    <div class="position-relative">
+                        <i class="fa fa-bell fa-lg mx-2 text-dark" id="notification-bell" onclick="toggleNotifications()"
+                            style="cursor: pointer;">
+                        </i>
+                    
+                        <!-- Red dot for new notifications 
+                        <span id="notification-dot" class="badge bg-danger position-absolute top-0 start-0 translate-middle rounded-pill"
+                            style="display: {% if unread_count > 0 %}inline{% else %}none{% endif %};">
+                        </span>
+                    
+                        <div id="notification-dropdown" class="notification-box shadow-lg rounded" style="display: none;">
+                            <div class="p-3 border-bottom d-flex justify-content-between">
+                                <h6 class="mb-0">Notifications</h6>
+                                <button class="btn btn-sm btn-link text-danger btn-close ms-2" onclick="closeNotifications()"></button>
+                            </div>
+                            <div id="notifications-list" class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
+                                {% for notification in notifications %}
+                                <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                                    <span>{{ notification.message }}</span>
+                    
+                                    {% if "bonus" in notification.message.lower() and "claimed" not in notification.message.lower() %}
+                                    <form action="{{ url_for('user.claim_bonus') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success">Claim</button>
+                                    </form>
+                                    {% endif %}
+                    
+                                    
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="p-2 text-center border-top">
+                                <a href="{{ url_for('user.get_notifications') }}" class="btn btn-sm btn-light w-100">View All</a>
+                            </div>
+                        </div>
+                    </div> 
+
+
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender == 'male' %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40"
+                        height="40" alt="Profile">
+                    {% elif user.gender == 'female' %}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40"
+                        height="40" alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40"
+                        height="40" alt="Profile">
+                    {% endif %}
+                </div>
+            </div>-->
+            
+            
+            <!-- Nav Content  -->
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+            
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+            
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>${{ "{:,}".format(user.balance) }}</span></p>
+                    </div>
+                </div>
+            </nav> -->
+
+
+            <!-- Loan Section  -->
+            <div class="funds__container">
+                <div class="funds__row">
+                    <div class="funds__cards l-bg-teal">
+                        <button class="btn" id="requestLoanBtn" data-bs-toggle="modal" data-bs-target="#loanModal">
+                            <a href="" class="text-light"><i class="fa fa-spinner text-light"> </i> Request Loan</a>
+                        </button>
+                        
+                    </div>
+            
+                    <div class="funds__cards l-bg-cherry">
+                        <a href="#Payback" class="p-2 text-light"><i class="fa fa-money-bill-wave p-2"></i>Pay Back Loan</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Cards  -->
+            <div class="container">
+                <div class="plans_and_others_container">
+                    <div class="row mt-5 mb-3">
+                        <div class="col-md-6 mb-5 ">
+                            <div class="plans_and_others_card small-card pt-0 pl-2 pb-0 l-bg-teal">
+                                <div class="plan_card">
+                                    <div class="plan_top_card pr-0 justify-content-center text-center">
+                                        <div class="plan_header_card text-center">
+                                            <h3 class="text-light pt-2">How to Request for loan</h3>
+                                            <p>Easy Steps</p>
+                                        </div>
+                                    </div>
+            
+                                    <div class="plan_body_card">
+                                        <ul class="list-unstyled components mt-4 p-2">
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Make Sure Your (KYC) Is Verrified</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle primary-color"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Pay The Required Amount</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle primary-color"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Choose A Payment Method</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle primary-color"></i></p>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Your account Manager will Contact You</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle primary-color"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Congrats! You will recieve Your loan</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle primary-color"></i></p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+            
+                                <div class="button-container">
+                                    <!-- <button class="btn l-bg-cherry">Invest now</button> -->
+                                    <!-- <button class="btn btn-light mt-1">
+                                        Request Loan Now
+                                    </button> -->
+                                    <!-- Loan Request Button -->
+                                    <button class="btn btn-light mt-1" id="requestLoanBtn" data-bs-toggle="modal" data-bs-target="#loanModal">
+                                        Request Loan Now
+                                    </button>
+                                </div>            
+                            </div>
+                        </div>
+            
+            
+                        <div class="col-md-6 mb-2">
+                            <div class="plans_and_others_card small-card pt-0 pl-2 pb-0 l-bg-cherry">
+                                <div class="plan_card">
+                                    <div class="plan_top_card pr-0 justify-content-center text-center">
+                                        <div class="plan_header_card">
+                                            <h3 class="text-light pt-2">How to Pay Back Loan</h3>
+                                            <p>Every Steps</p>
+                                        </div>
+                                    </div>
+            
+                                    <div class="plan_body_card">
+                                        <ul class="list-unstyled components mt-4 p-2">
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Deposit the loan Amount you Took</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle text-light"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Add The Interest</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle text-light"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Make Sure its before the Deadline</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle text-light"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Come back Click on Pay Back Loan</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle text-light"></i></p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p> Loan wiLL Be Deducted.</p>
+                                                    <p class="mt-1"><i class="fa fa-check-circle text-light"></i></p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+            
+                                <div class="button-container">
+                                    <!-- <button class="btn l-bg-teal">Invest now</button> -->
+                                    <button class="btn btn-light mt-1">
+                                        <a href="#Payback">Pay Back Loan Now</a>
+                                    </button>
+                                </div>
+                            </div>
+            
+                        </div>                                    
+            
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Request Modal -->
+            <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="loanModalLabel">Request Loan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="loanRequestForm" method="POST" action="{{ url_for('user.request_loan') }}">
+                            <div class="modal-body">
+                                <p class="l-bg-green p-2 rounded-3" style="line-height: 15px;">
+                                    please be aware that we need at least 35% of the loan amount you need
+                                    which will be refunded once your loan is paid.
+                                </p>
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label">Loan Amount</label>
+                                    <input type="number" class="form-control" id="amount" placeholder="(ex. 30000)" name="amount" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="duration" class="form-label">How long do you think need to repay? Duration (in months)</label>
+                                    <input type="number" class="form-control" placeholder="(ex. 6)" id="duration" name="duration" required>
+                                    <p class="text-danger p-2" style="line-height: 15px;">
+                                    please be aware that we charge an interest of 0.08% per month and 0.10% on over due.
+                                </p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn l-bg-cherry">Request Loan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="container refferal_container">
+
+                <h5 class="all_refferals pt-5 text-center mt-2">
+                    Loan History
+                </h5>
+
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto bg-white rounded shadow p-3">
+                
+                            <!-- Table with fixed header and scrolling body -->
+                            <div class="table-responsive" id="Payback">
+                                <table class="table table-striped table-hover table-fixed">
+                                    <thead class="thead primary-bg-color">
+                                        <tr class="primary-bg-color">
+                                            <th scope="col">#</th>
+                                            <th scope="col">UID</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Duration(months)</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for loan in loans %}
+                                        <tr>
+                                            <th scope="row">{{ loan.id }}</th>
+                                            <td>{{ loan.id }}</td>
+                                            <td>{{ loan.user.username }}</td>
+                                            <td>{{ loan.created_at.strftime('%Y-%m-%d') }}</td>
+                                            <td>${{ "{:,}".format(loan.amount) }}</td>
+                                            <td>
+                                                {% if loan.status == 'paid' %}
+                                                <p class="bg-success text-light p-2 mt-4 d-inline">Paid</p>
+                                                {% elif loan.status == 'approved' %}
+                                                <p class="l-bg-blue text-light p-2 mt-4 d-inline">Approved</p>
+                                                {% elif loan.status == 'pending' %}
+                                                <p class="bg-warning text-dark p-2 mt-4 d-inline">Pending</p>
+                                                {% elif loan.status == 'unpaid' %}
+                                                <p class="l-bg-pink text-light p-2 mt-4 d-inline">Unpaid</p>
+                                                {% elif loan.status == 'due' %}
+                                                <p class="bg-danger text-light p-2 mt-4 d-inline">Due</p>
+                                                {% elif loan.status == 'overdue' %}
+                                                <p class="bg-danger text-light p-2 mt-4 d-inline">Overdue</p>
+                                                {% elif loan.status == 'cancelled' %}
+                                                <p class="bg-danger text-light p-2 mt-4 d-inline">Cancelled</p>
+                                                {% else %}
+                                                <p class="bg-secondary text-light p-2 mt-4 d-inline">{{ loan.status }}</p>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <h6 class="text-center pt-2">{{ loan.duration }}</h6>
+                                            </td>
+                                
+                                            <td>
+                                                <div class="flex mb-3 pt-0">
+                                                    <button class="btn mt-0 pt-0 border-0" {% if loan.status == 'paid' %}disabled{% endif %} data-bs-toggle="modal" data-bs-target="#editLoanModal{{ loan.id }}">
+                                                        <i class="fa fa-pencil l-bg-cherry p-2 rounded-3 border-0"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                
+                                        {% endfor %}
+                                
+                                        {% for loan in loans %}
+                                        <div class="modal fade" id="editLoanModal{{ loan.id }}" tabindex="-1" aria-labelledby="editLoanLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Loan Status</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ url_for('user.update_loan_status', loan_id=loan.id) }}" method="POST">
+                                                        <div class="modal-body">
+                                                            <label for="status" class="form-label">Loan Status</label>
+                                                            <select name="status" id="status" class="form-select">
+                                                                {% if loan.status == 'pending' %}
+                                                                <option value="cancelled" {% if loan.status=='cancelled' %}selected{% endif %}>Cancel</option>
+                                                                {% endif %}
+                                                                <option value="paid" {% if loan.status=='paid' %}selected{% endif %}>Pay Back</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-success">Save
+                                                                Changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                
+                                    </tbody>
+                                </table>
+                                <!-- <table class="table table-striped table-hover table-fixed">
+                                    <thead class="thead primary-bg-color">
+                                        <tr class="primary-bg-color">
+                                            <th scope="col">#</th>
+                                            <th scope="col">UID</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>341982</td>
+                                            <td>Mark</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green text-white p-1"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>341982</td>
+                                            <td>Jacob</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-danger text-dark p-2 d-inline">OveerDue</p>
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green text-white p-1"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>341982</td>
+                                            <td>Larry the Bird</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green text-white p-1"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>341982</td>
+                                            <td>Martin</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Due</p>
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green text-white p-1"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>341982</td>
+                                            <td>Sam</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green text-white p-1"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td>341982</td>
+                                            <td>John</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <a class="btn l-bg-green p-1 text-white"><i class="fa fa-check text-light p-1"></i> Pay Loan</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div><!-- End -->
+                
+                        </div>
+                    </div>
+                
+                </div>
+
+            </div>
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                fetchNotifications();
+            });
+
+            function fetchNotifications() {
+                fetch('/notifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        let count = data.length;
+                        let countElement = document.getElementById('notification-count');
+                        let listElement = document.getElementById('notifications-list');
+
+                        if (count > 0) {
+                            countElement.textContent = count;
+                            countElement.style.display = 'inline';
+                        } else {
+                            countElement.style.display = 'none';
+                        }
+
+                        listElement.innerHTML = '';
+                        data.forEach(notification => {
+                            let item = document.createElement('div');
+                            item.className = 'list-group-item';
+                            item.innerHTML = `
+                    <div class="d-flex flex-column">
+                        <small>${notification.message}</small>
+                        <small class="text-muted">${notification.created_at}</small>
+                    </div>
+                `;
+                            listElement.appendChild(item);
+                        });
+                    });
+            }
+
+            function toggleNotifications() {
+                let dropdown = document.getElementById('notification-dropdown');
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function markNotificationsRead() {
+                fetch('/mark_notifications_read', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('notification-count').style.display = 'none';
+                            document.getElementById('notifications-list').innerHTML = '<div class="p-2 text-center text-muted">No new notifications</div>';
+                        }
+                    });
+            }
+
+
+        function closeNotifications() {
+                document.getElementById("notification-dropdown").style.display = "none";
+            }
+
+            function dismissNotification(notifId) {
+                fetch(`/notifications/dismiss/${notifId}`, { method: "POST" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("notification-dropdown").innerHTML = data.updatedNotificationsHtml;
+                        }
+                    });
+            }
+
+        function toggleNotifications() {
+            let dropdown = document.getElementById('notification-dropdown');
+            let redDot = document.getElementById('notification-dot');
+
+            if (dropdown.style.display === "none") {
+                dropdown.style.display = "block";
+                redDot.style.display = "none"; // Hide red dot when opened
+            } else {
+                dropdown.style.display = "none";
+            }
+        }
+
+        function closeNotifications() {
+            document.getElementById('notification-dropdown').style.display = "none";
+        }
+
+
+    </script>
+
+{% endblock %}

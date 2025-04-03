@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block content %}
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+    <!-- <link rel="stylesheet" href="../css/users_dashboard.css">
+        <link rel="stylesheet" href="../css/admin_dashboard.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+
+
+    <div class="wrapper d-flex align-items-stretch">
+
+        <nav id="sidebar" class="active">
+            <h1><a href="{{url_for('main.home')}}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{url_for('admin.dashboard')}}" class="text-decoration-none"
+                        ><span class="fa fa-home"></span>
+                        Home</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.investment')}}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;">
+                        <span class="fa fa-handshake"></span>
+                        Investment
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.loan')}}" class="text-decoration-none"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.transactions')}}" class="text-decoration-none"><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.users')}}" class="text-decoration-none"><span class="fa fa-user-md"></span>
+                        Users</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.kyc')}}" class="text-decoration-none"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+        
+                <li>
+                    <a href="{{url_for('admin.support')}}" class="text-decoration-none"><span class="fa fa-support"></span>
+                        Support</a>
+                </li>
+                <li>
+                    <a href="{{url_for('auth.logout')}}" class="text-decoration-none"><span class="fa fa-sign-out"></span>
+                        Logout</a>
+                </li>
+            </ul>
+        
+        </nav>
+
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+
+            <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }} </span></p>
+                </div>
+
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender in ['male', 'Male'] %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40" height="40"
+                        alt="Profile">
+                    {% elif user.gender in ['female', 'Female']%}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40" height="40"
+                        alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40" height="40"
+                        alt="Profile">
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <!-- Nav Content  -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
+                    </div>
+                </div>
+            </nav>
+
+
+            <div class="container">
+                <!-- Button to Open the Modal -->
+                <button type="button" class="btn l-bg-pink mb-3" data-bs-toggle="modal" data-bs-target="#addPlanModal">
+                    Add New Plan
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="addPlanModal" tabindex="-1" aria-labelledby="addPlanModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addPlanModalLabel">Add New Plan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('admin.add_plan') }}" method="POST">
+                                    <div class="mb-3">
+                                        <label for="name">Plan Name:</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="roi">ROI (%):</label>
+                                        <input type="number" step="0.01" class="form-control" id="roi" name="roi" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="min_amount">Minimum Amount:</label>
+                                        <input type="number" step="0.01" class="form-control" id="min_amount" name="min_amount"
+                                            required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="max_amount">Maximum Amount:</label>
+                                        <input type="number" step="0.01" class="form-control" id="max_amount" name="max_amount"
+                                            required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="duration">Duration (Months):</label>
+                                        <input type="number" class="form-control" id="duration" name="duration" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="capital_back">Capital Back:</label>
+                                        <select class="form-control" id="capital_back" name="capital_back">
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                
+                                    <button type="submit" class="btn btn-primary">Add Plan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            
+                <div class="plans_and_others_container mt-3">
+                    <div class="row mt-3 mb-3">
+                        {% for plan in plans %}
+                        <div class="col-md-3 mb-5">
+                            <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                <div class="plan_card">
+                                    <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                        <div class="plan_header_card">
+                                            <h3 class="primary-color">{{ plan.name }}</h3>
+                                            <p>Every Day</p>
+                                        </div>
+                                        <div class="roi_card primary-bg-color pr-0">
+                                            <h5 class="text-white pl-2">ROI</h5>
+                                            <p class="text-white pl-2">{{ plan.roi }}%</p>
+                                        </div>
+                                    </div>
+                
+                                    <div class="plan_body_card">
+                                        <ul class="list-unstyled components mt-4 pr-1">
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                    <p class="mt-1">${{ "{:,}".format(plan.min_amount) }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                    <p class="mt-1">${{ "{:,}".format(plan.max_amount) }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                    <p class="mt-1">{{ plan.duration }} months</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                    <p class="mt-1">{{ plan.capital_back }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Instant Payout</p>
+                                                    <p class="mt-1">Yes</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                
+                                <div class="button-container">
+                                    <button type="button" class="btn primary-bg-color edit-plan-btn" data-bs-toggle="modal" data-bs-target="#editPlanModal"
+                                        data-plan-id="{{ plan.id }}" data-plan-name="{{ plan.name }}" data-plan-roi="{{ plan.roi }}"
+                                        data-plan-min="{{ plan.min_amount }}" data-plan-max="{{ plan.max_amount }}" data-plan-duration="{{ plan.duration }}"
+                                        data-plan-capital="{{ plan.capital_back }}">
+                                        Edit
+                                    </button>
+                                    <button class="btn l-bg-cherry mt-1 delete-plan-btn text-white" data-plan-id="{{ plan.id }}">
+                                        Delete
+                                    </button>
+
+                                </div>
+                
+                            </div>
+                
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="modal fade" id="editPlanModal" tabindex="-1" aria-labelledby="editPlanModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editPlanModalLabel">Edit Investment Plan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form id="editPlanForm" action="" method="POST">
+                                <div class="modal-body">
+                                    <input type="hidden" name="plan_id" id="edit-plan-id">
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-name" class="form-label">Plan Name</label>
+                                        <input type="text" class="form-control" id="edit-plan-name" name="name" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-roi" class="form-label">ROI (%) please don't add % </label>
+                                        <input type="number" class="form-control" placeholder="please don't add % ex. 20" id="edit-plan-roi" name="roi" step="0.01" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-min" class="form-label">Minimum Amount ($)</label>
+                                        <input type="number" class="form-control" placeholder="please don't add 'curreny or ,' ex. 20000" id="edit-plan-min" name="min_amount" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-max" class="form-label">Maximum Amount ($)</label>
+                                        <input type="number" class="form-control" id="edit-plan-max" placeholder="please don't add 'curreny or ,' ex. 20000" name="max_amount" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-duration" class="form-label">Duration (months)</label>
+                                        <input type="number" class="form-control" id="edit-plan-duration" placeholder="please don't add months ex. 10" name="duration" required>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="edit-plan-capital" class="form-label">Capital Back</label>
+                                        <select class="form-control" id="edit-plan-capital" name="capital_back">
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- <div class="container">
+            
+        </div> -->
+    </div>
+            
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

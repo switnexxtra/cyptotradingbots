@@ -1,0 +1,699 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+    
+    <!-- External Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/line-awesome.min.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    
+    <!-- Bootstrap Links -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    
+    <!-- <link rel="stylesheet" href="../css/users_dashboard.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users_dashboard.css') }}">
+    
+    <!-- Custom Css -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main1.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kyc-2.css') }}">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <!-- <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='img/icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename='img/icon-114x114.png') }}">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/themify-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/owl.carousel.css') }}" rel="stylesheet"> -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+
+
+{% endblock %}
+
+
+{% block content %}
+    
+
+    <div class="wrapper d-flex align-items-stretch">
+    
+        <nav id="sidebar" class="active">
+            <h1><a href="{{url_for('main.home')}}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{url_for('user.dashboard')}}" class="text-decoration-none"><span class="fa fa-home"></span>
+                        Home</a>
+                </li>
+                <li>
+                    <a href="{{url_for('user.investment')}}" class="text-decoration-none">
+                        <span class="fa fa-handshake"></span>
+                        Investment
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url_for('user.loan')}}" class="text-decoration-none"><span class="fa fa-money"></span>
+                        Loan</a>
+                </li>
+                <li>
+                    <a href="{{url_for('user.transactions')}}" class="text-decoration-none"><span
+                            class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                
+                <li>
+                    <a href="{{url_for('user.kyc')}}" class="text-decoration-none"><span class="fa fa-users"></span>
+                        Kyc</a>
+                </li>
+    
+                <li>
+                    <a href="{{url_for('user.support')}}" class="text-decoration-none"><span class="fa fa-support"></span>
+                        Support</a>
+                </li>
+                <li>
+                    <a href="{{url_for('auth.logout')}}" class="text-decoration-none"><span class="fa fa-sign-out"></span>
+                        Logout</a>
+                </li>
+            </ul>
+    
+        </nav>
+    
+    
+    
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+    
+            <!-- <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }}! </span></p>
+                </div>
+    
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender == 'male' %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry"
+                        width="40" height="40" alt="Profile">
+                    {% elif user.gender == 'female' %}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink"
+                        width="40" height="40" alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange"
+                        width="40" height="40" alt="Profile">
+                    {% endif %}
+                </div>
+            </div>
+             -->
+    
+    
+            <!-- Nav Content  -->
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
+                <div class="container-fluid">
+    
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+    
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
+                    </div>
+                </div>
+            </nav> -->
+
+            {% include 'user/header.html' %}
+
+            <div class="container pl-4 ml-1 mt-4 mb-4">
+                {% if kyc_records %}
+                {% for kyc in kyc_records %}
+                <h6>
+                    KYC Status:
+                    <span class=" p-2 mt-2
+                                {% if kyc.status == 'pending' %} text-warning 
+                                {% elif kyc.status == 'failed' %} text-danger 
+                                {% elif kyc.status == 'verified' %} text-success 
+                                {% else %} text-secondary 
+                                {% endif %}
+                            ">
+                        {% if kyc.status in ['pending', 'failed', 'verified'] %}
+                        {{ kyc.status }}
+                        {% else %}
+                        Not Sent
+                        {% endif %}
+                    </span>
+                </h6>
+                {% endfor %}
+                {% else %}
+                <p>KYC Status: <span class="text-secondary">Not Sent</span></p>
+                {% endif %}
+            </div>
+
+            <div class="ugf-bg ufg-main-container pt-3 mt-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 p-sm-0">
+                            <div class="ugf-form">
+                                <form action="{{ url_for('user.submit_kyc') }}" method="POST" enctype="multipart/form-data" id="commentForm">
+                                    <div class="input-block">
+                                        <h4>Personal Information</h4>
+                                        <div class="row">
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="inputFname">First Name</label>
+                                                    <input type="text" name="fName" class="form-control" id="inputFname"
+                                                        placeholder="e.g. Robert" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="inputLname">Last Name</label>
+                                                    <input type="text" name="lName" class="form-control" id="inputLname"
+                                                        placeholder="e.g. Smith" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group country-select">
+                                                    <label for="inputCountry">Country of Nationality</label>
+                                                    <div class="select-input choose-country">
+                                                        <span></span>
+                                                        <select id="inputCountry" name="Nationality" class="form-control" required>
+                                                            <option value="Country">Country</option>
+                                                            <option value="USA">USA</option>
+                                                            <option value="Russia">Russia</option>
+                                                            <option value="China">China</option>
+                                                            <option value="England">England</option>
+                                                            <option value="France">France</option>
+                                                            <option value="Germany">Germany</option>
+                                                            <option value="Spain">Spain</option>
+                                                            <option value="Netherland">Netherland</option>
+                                                            <option value="Singapur">Singapur</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="inputDate">Date of Birth</label>
+                                                    <div class="birth-date">
+                                                        <div class="select-input birth-date-input">
+                                                            <span></span>
+                                                            <select id="day" name="day" name="dob" class="form-control" required>
+                                                                <option value="date">Date</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                                <option value="24">24</option>
+                                                                <option value="25">25</option>
+                                                                <option value="26">26</option>
+                                                                <option value="27">27</option>
+                                                                <option value="28">28</option>
+                                                                <option value="29">29</option>
+                                                                <option value="30">30</option>
+                                                                <option value="31">31</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="select-input birth-date-input">
+                                                            <span></span>
+                                                            <select id="month" name="month" name="dob" class="form-control" required>
+                                                                <option value="">Month</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="select-input birth-date-input">
+                                                            <span></span>
+                                                            <select id="year" name="year" name="dob" class="form-control" required>
+                                                                <option value="Year">Year</option>
+                                                                <option value="1990">1990</option>
+                                                                <option value="1991">1991</option>
+                                                                <option value="1992">1992</option>
+                                                                <option value="1993">1993</option>
+                                                                <option value="1994">1994</option>
+                                                                <option value="1995">1995</option>
+                                                                <option value="1996">1996</option>
+                                                                <option value="1997">1997</option>
+                                                                <option value="1998">1998</option>
+                                                                <option value="1999">1999</option>
+                                                                <option value="2001">2001</option>
+                                                                <option value="2002">2002</option>
+                                                                <option value="2003">2003</option>
+                                                                <option value="2004">2004</option>
+                                                                <option value="2005">2005</option>
+                                                                <option value="2006">2006</option>
+                                                                <option value="2007">2007</option>
+                                                                <option value="2008">2008</option>
+                                                                <option value="2009">2009</option>
+                                                                <option value="2010">2010</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Hidden input to store the formatted date -->
+                                                <input type="hidden" id="dob" name="dob">
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group country-select">
+                                                    <label for="inputCountry">Country of Residence</label>
+                                                    <div class="select-input choose-country">
+                                                        <span></span>
+                                                        <select id="inputCountry" name="country" class="form-control" required>
+                                                            <option value="Country">Country</option>
+                                                            <option value="USA">USA</option>
+                                                            <option value="Russia">Russia</option>
+                                                            <option value="China">China</option>
+                                                            <option value="England">England</option>
+                                                            <option value="France">France</option>
+                                                            <option value="Germany">Germany</option>
+                                                            <option value="Spain">Spain</option>
+                                                            <option value="Netherland">Netherland</option>
+                                                            <option value="Singapur">Singapur</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="state">State/Province</label>
+                                                    <input type="text" class="form-control" name="state" id="state"
+                                                        placeholder="e.g. Smith" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="address1">Address Line 1</label>
+                                                    <input type="text" class="form-control" name="address" id="address1"
+                                                        placeholder="e.g. 2707 Par Drive" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="address2">Address Line 2</label>
+                                                    <input type="text" class="form-control" id="address2"
+                                                        placeholder="e.g. Los Angeles, CA 90013">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="city">City</label>
+                                                    <input type="text" class="form-control" name="city" id="city"
+                                                        placeholder="e.g. New York" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 p-sm-0">
+                                                <div class="form-group">
+                                                    <label for="zip">Post Code</label>
+                                                    <input type="text" class="form-control" name="postcode" id="zip"
+                                                        placeholder="e.g. 0000" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Gender</label>
+                                            <div class="check-gender">
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="gender" class="custom-control-input" id="Gmale" value="Male" required>
+                                                    <label class="custom-control-label" for="Gmale">Male</label>
+                                                </div>
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="gender" class="custom-control-input" id="Gfemale" value="Female" required>
+                                                    <label class="custom-control-label" for="Gfemale">Female</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                     
+                                    <div class="input-block">
+                                        <h4>Personal Documents</h4>
+                                        <p>Upload any of the following personal documents.</p>
+                                        <p>
+                                            Please ensure that you submit real and valid documents, as they will be carefully reviewed by our team.
+                                            If any document is detected to be fake, it may lead to account suspension or permanent account disablement.
+                                        </p>
+                                        <div class="documents-upload-wrap">
+                                            <div class="label">Select Document Type</div>
+                                            <ul class="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link active" id="passport-tab" data-bs-toggle="pill" href="#passport" role="tab"
+                                                        aria-controls="passport" aria-selected="true">
+                                                        <img src="{{ url_for('static', filename='img/passport.png') }}" alt=""> Passport
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link" id="nid-tab" data-bs-toggle="pill" href="#nid" role="tab" aria-controls="nid"
+                                                        aria-selected="false">
+                                                        <img src="{{ url_for('static', filename='img/nid.png') }}" alt=""> National ID
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link" id="driver-tab" data-bs-toggle="pill" href="#driver" role="tab"
+                                                        aria-controls="driver" aria-selected="false">
+                                                        <img src="{{ url_for('static', filename='img/driving.png') }}" alt=""> Driver’s License
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content" id="pills-tabContent">
+                                                <!-- Passport Tab Content -->
+                                                <div class="tab-pane fade show active" id="passport" role="tabpanel" aria-labelledby="passport-tab">
+                                                    <div class="documents-upload">
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input1" name="document_front" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="input1" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input1" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Passport Cover</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input2" name="document_back" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="input2" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input2" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Passport Data Page</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input3" name="selfie_with_document" class="input-file" accept="image/*" required
+                                                                hidden />
+                                                            <label class="btn-upload" for="input3" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input3" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Selfie With Passport</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- National ID Tab Content -->
+                                                <div class="tab-pane fade" id="nid" role="tabpanel" aria-labelledby="nid-tab">
+                                                    <div class="documents-upload">
+                                                        <div class="upload-item">
+                                                            <input type="file" id="nid_input1" name="nid_front" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="nid_input1" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="nid-p-input1" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">National ID Front</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="nid_input2" name="nid_back" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="nid_input2" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="nid-p-input2" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">National ID Back</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Driver's License Tab Content -->
+                                                <div class="tab-pane fade" id="driver" role="tabpanel" aria-labelledby="driver-tab">
+                                                    <div class="documents-upload">
+                                                        <div class="upload-item">
+                                                            <input type="file" id="driver_input1" name="driver_front" class="input-file" accept="image/*" required
+                                                                hidden />
+                                                            <label class="btn-upload" for="driver_input1" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="driver-p-input1" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Driver’s License Front</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="driver_input2" name="driver_back" class="input-file" accept="image/*" required
+                                                                hidden />
+                                                            <label class="btn-upload" for="driver_input2" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="driver-p-input2" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Driver’s License Back</span>
+                                                                <a href="#"><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <!-- </div> -->
+                                                    <div class="conditions">
+                                                        <ul>
+                                                            <li class="complete">File formats accepted: JPEG, JPG, PNG (Max size: 250 KB)</li>
+                                                            <li>Document must be in good condition</li>
+                                                            <li>Document must be valid</li>
+                                                            <li>Face must be clearly visible</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="document_type" id="documentType" value="passport">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-checkbox">
+                                                <input type="checkbox" name="checkBox" class="custom-control-input" id="customControlValidation1" required>
+                                                <label class="custom-control-label" for="customControlValidation1">
+                                                    I accept the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <!-- <div class="input-block">
+                                        <h4>Personal Documents</h4>
+                                        <p>Upload any of the following personal documents.</p>
+                                        <p>
+                                            Please ensure you submit real and valid documents, as they will be carefully reviewed by our team.
+                                            If any document is detected to be fake, it may lead to account suspension or permanent account disablement.
+                                        </p>
+                                        <div class="documents-upload-wrap">
+                                            <div class="label">Select Document Type</div>
+                                            <ul class="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link active" id="passport-tab" data-bs-toggle="pill" href="#passport" role="tab"
+                                                        aria-controls="passport" aria-selected="true">
+                                                        <img src="{{ url_for('static', filename='img/passport.png') }}" alt=""> Passport
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link" id="nid-tab" data-bs-toggle="pill" href="#nid" role="tab" aria-controls="nid"
+                                                        aria-selected="false">
+                                                        <img src="{{ url_for('static', filename='img/nid.png') }}" alt=""> National ID
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link" id="driver-tab" data-bs-toggle="pill" href="#driver" role="tab"
+                                                        aria-controls="driver" aria-selected="false">
+                                                        <img src="{{ url_for('static', filename='img/driving.png') }}" alt=""> Driver’s License
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content" id="pills-tabContent">
+                                                <div class="tab-pane fade show active" id="passport" role="tabpanel" aria-labelledby="passport-tab">
+                                                    <div class="documents-upload">
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input1" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="input1" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input1" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Passport Cover</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input2" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="input2" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input2" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Passport Data Page</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upload-item">
+                                                            <input type="file" id="input3" class="input-file" accept="image/*" required hidden />
+                                                            <label class="btn-upload" for="input3" role="button">
+                                                                <img src="{{ url_for('static', filename='img/cloud.png') }}">
+                                                                <div id="p-input3" class="preview-box"></div>
+                                                            </label>
+                                                            <div class="upload-direction">
+                                                                <span class="text">Selfie With Passport</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="conditions">
+                                                        <ul>
+                                                            <li class="complete">Accepted file formats: JPEG/JPG/PNG (Max size: 250 KB)</li>
+                                                            <li>Document should be in good condition</li>
+                                                            <li>Document must be valid</li>
+                                                            <li>Face must be clearly visible</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="document_type" id="document_type">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-checkbox">
+                                                <input type="checkbox" name="checkBox" class="custom-control-input" id="customControlValidation1" required>
+                                                <label class="custom-control-label" for="customControlValidation1">
+                                                    I accept the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                                    <button class="btn">
+                                        {% if kyc_records %}
+                                            Update Documents
+                                        {% else %}
+                                            Submit Documents
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let tabs = document.querySelectorAll('.nav-link');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.getElementById('document_type').value = this.id.replace('-tab', '');
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form"); // Select the form
+            form.addEventListener("submit", function (event) {
+                const day = document.getElementById("day").value;
+                const month = document.getElementById("month").value;
+                const year = document.getElementById("year").value;
+
+                if (!day || !month || !year) {
+                    alert("Please select a valid date of birth.");
+                    event.preventDefault(); // Stop form submission
+                    return;
+                }
+
+                // Format as YYYY-MM-DD
+                const formattedDate = `${year}-${month}-${day}`;
+                document.getElementById("dob").value = formattedDate;
+
+                console.log("Formatted DOB:", formattedDate); // Debugging output
+            });
+        });
+    </script>
+
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            let fileInputs = document.querySelectorAll('.input-file[required]');
+            fileInputs.forEach(input => {
+                if (!input.value) {
+                    input.removeAttribute('required'); // Remove required if no file is selected
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        document.querySelectorAll('.nav-link').forEach(item => {
+            item.addEventListener('click', function () {
+                document.getElementById('documentType').value = this.getAttribute('href').substring(1);
+            });
+        });
+    </script>
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to update file name
+            function updateFileName(inputId, previewId) {
+                const input = document.getElementById(inputId);
+                const previewBox = document.getElementById(previewId);
+
+                input.addEventListener("change", function () {
+                    if (input.files.length > 0) {
+                        previewBox.innerText = input.files[0].name; // Display file name
+                        previewBox.style.color = "#7FFFD4"; // Optional: Change text color
+                        previewBox.style.margin = "90px 0 0 0"; // Optional: Change text color
+                    } else {
+                        previewBox.innerText = ""; // Clear if no file is selected
+                    }
+                });
+            }
+
+            // Call function for each file input
+            updateFileName("input1", "p-input1");
+            updateFileName("input2", "p-input2");
+            updateFileName("input3", "p-input3");
+        });
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,462 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Bootstrap Links -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+
+<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<!-- <link href="{{ url_for('static', filename='css/bootstrap.min1.css') }}" rel="stylesheet"> -->
+{% endblock %}
+
+{% block content %}
+
+    <div class="wrapper d-flex align-items-stretch">
+
+        <nav id="sidebar" class="active">
+            <h1><a href="{{ url_for('main.home') }}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none"><span class="fa fa-home"></span>
+                        Home</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.investment') }}" class="text-decoration-none"><span
+                            class="fa fa-handshake"></span>
+                        Investment</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.loan') }}" class="text-decoration-none"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.transactions') }}" class="text-success text-decoration-none"
+                        style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                
+                <li>
+                    <a href="{{url_for('admin.users')}}" class="text-decoration-none"><span class="fa fa-user-md"></span> Users</a>
+                </li>
+                
+                <li>
+                    <a href="{{ url_for('admin.kyc') }}" class="text-decoration-none"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+        
+                <li>
+                    <a href="{{ url_for('admin.support') }}" class="text-decoration-none"><span class="fa fa-support"></span>
+                        Support</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.logout') }}" class="text-decoration-none"><span class="fa fa-sign-out"></span>
+                        Logout</a>
+                </li>
+            </ul>
+        
+        </nav>
+
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+
+            <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }} </span></p>
+                </div>
+            
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender == 'male' %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40"
+                        height="40" alt="Profile">
+                    {% elif user.gender == 'female' %}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40"
+                        height="40" alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40"
+                        height="40" alt="Profile">
+                    {% endif %}
+                </div>
+            </div>
+            
+            
+            <!-- Nav Content  -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+            
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+            
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>${{ user.balance }} </span></p>
+                    </div>
+                </div>
+            </nav>
+
+
+            <!-- Transaction section -->
+            <div class="container refferal_container">
+
+                <h5 class="all_refferals pt-5 text-center mt-2">
+                    All Transactions From Users
+                </h5>
+
+
+                <!-- Search Bar -->
+                <div class="mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search transaction by transationID"
+                        onkeyup="searchUsers()">
+                </div>
+                
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto bg-white rounded shadow p-3">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover table-fixed">
+                                    <thead class="thead primary-bg-color">
+                                        <tr class="primary-bg-color">
+                                            <th scope="col">#</th>
+                                            <th scope="col">TransactionID</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Details</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaction in transactions %}
+                                        <tr>
+                                            <th class="mt-3 pt-3" scope="row">{{ loop.index }}</th>
+                                            <td class="mt-3 pt-3">{{ transaction.transaction_id }}</td>
+                                            <td class="mt-3 pt-3">{{ transaction.created_at.strftime('%d-%m-%Y') }}</td>
+                                            <td class="mt-3 pt-3">{{ transaction.user.username }}</td>
+                                            <td class="mt-3 pt-3">{{ transaction.transaction_type }}</td>
+                                            <td class="mt-3 pt-3">{{ transaction.transaction_detail }}</td>
+                                            <td class="mt-3 pt-3">${{ transaction.amount }}</td>
+                                            <td class="mt-3 pt-3">
+                                                {% if transaction.status in ["Pending", "pending"] %}
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                                {% elif transaction.status in ["Completed", "completed"] %}
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                                {% elif transaction.status in ["Failed", "failed"] %}
+                                                <p class="bg-danger text-white p-2 d-inline">Failed</p>
+                                                {% else %}
+                                                <p class="bg-secondary text-white p-2 d-inline">{{ transaction.status }}</p>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="flex">
+                                                    <button class="btn edit-btn" data-transaction-id="{{ transaction.id }}"
+                                                        data-transaction-type="{{ transaction.transaction_type }}"
+                                                        data-transaction-detail="{{ transaction.transaction_detail }}" data-amount="{{ transaction.amount }}"
+                                                        data-status="{{ transaction.status }}"
+                                                        data-image-url="{{ url_for('static', filename='uploads/' + transaction.image_url) if transaction.image_url else '' }}"><i
+                                                            class="fa fa-pencil l-bg-blue p-2 mb-4 rounded-2"></i>
+                                                    </button>
+
+                                                    <button class="btn delete-btn" data-transaction-id="{{ transaction.id }}"><i
+                                                            class="fa fa-trash l-bg-red p-2 mb-4 rounded-2"></i></button>
+                                                    <button class="btn confirm-btn" data-transaction-id="{{ transaction.id }}"><i
+                                                            class="fa fa-check l-bg-green p-2 mb-4 rounded-2"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editTransactionModalLabel">Edit Transaction Status</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editTransactionForm">
+                                    <div class="mb-3">
+                                        <label for="transactionType" class="form-label">Transaction Type:</label>
+                                        <input type="text" id="transactionType" class="form-control" readonly>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="transactionDetail" class="form-label">Transaction Details:</label>
+                                        <input type="text" id="transactionDetail" class="form-control" readonly>
+                                    </div>
+                
+                                    <div class="mb-3">
+                                        <label for="amount" class="form-label">Amount:</label>
+                                        <input type="text" id="amount" class="form-control" readonly>
+                                    </div>
+                
+                                    <!-- Image Section (if available) -->
+                                    <div class="mb-3" id="imageSection" style="display:none;">
+                                        <label for="imagePreview" class="form-label">Image:</label>
+                                        <img id="imagePreview" class="img-fluid" src="" alt="Transaction Image">
+                                    </div>
+                
+                                    <input type="hidden" id="transactionId" name="transaction_id">
+                
+                                    <div class="mb-3">
+                                        <label for="status">Status:</label>
+                                        <select id="status" class="form-control">
+                                            <option value="pending">Pending</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="failed">Failed</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Open Edit Modal
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    let transactionId = this.getAttribute('data-transaction-id');
+                    document.getElementById('transactionId').value = transactionId;
+                    new bootstrap.Modal(document.getElementById('editTransactionModal')).show();
+                });
+            });
+
+            // Save Changes
+            document.getElementById('saveChangesBtn').addEventListener('click', function () {
+                let transactionId = document.getElementById('transactionId').value;
+                let status = document.getElementById('status').value;
+
+                fetch(`/admin/update_transaction_status/${transactionId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Success", "Transaction updated successfully!", "success").then(() => location.reload());
+                        } else {
+                            Swal.fire("Error", "Something went wrong!", "error");
+                        }
+                    });
+            });
+
+            // Delete Transaction
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    let transactionId = this.getAttribute('data-transaction-id');
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "This transaction will be deleted permanently!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, cancel!",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/admin/delete_transaction/${transactionId}`, { method: 'DELETE' })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire("Deleted!", "Transaction has been deleted.", "success").then(() => location.reload());
+                                    } else {
+                                        Swal.fire("Error", "Something went wrong!", "error");
+                                    }
+                                });
+                        }
+                    });
+                });
+            });
+        });
+
+
+        // Live Search for JS code
+        
+        function searchUsers() {
+                const searchValue = document.getElementById('searchInput').value;
+
+                fetch(`/admin/search_transactions?q=${encodeURIComponent(searchValue)}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('tbody').innerHTML = html;
+
+                        // Reattach event listeners to buttons after replacing content
+                        attachEventListeners();
+                    })
+                    .catch(error => {
+                        console.error('Error searching transactions:', error);
+                    });
+            }
+
+            // Function to attach event listeners to buttons
+            function attachEventListeners() {
+                // Edit button handlers
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const transactionId = this.getAttribute('data-transaction-id');
+                        document.getElementById('transactionId').value = transactionId;
+                        const modal = new bootstrap.Modal(document.getElementById('editTransactionModal'));
+                        modal.show();
+                    });
+                });
+
+                // Delete button handlers
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const transactionId = this.getAttribute('data-transaction-id');
+                        // Store the transaction ID for the delete confirmation
+                        document.getElementById('confirmDelete').setAttribute('data-transaction-id', transactionId);
+                        // const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                        // modal.show();
+                    });
+                });
+
+                // Confirm button handlers - add functionality as needed
+                document.querySelectorAll('.confirm-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const transactionId = this.getAttribute('data-transaction-id');
+                        // Add your confirmation logic here
+                        alert('Confirming transaction: ' + transactionId);
+                    });
+                });
+            }
+
+            // Initialize event listeners when page loads
+            document.addEventListener('DOMContentLoaded', function () {
+                attachEventListeners();
+
+                // Save changes button in edit modal
+                document.getElementById('saveChangesBtn').addEventListener('click', function () {
+                    const transactionId = document.getElementById('transactionId').value;
+                    const status = document.getElementById('status').value;
+
+                    // Send AJAX request to update transaction
+                    fetch('/admin/update_transaction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken() // Function to get CSRF token from cookie
+                        },
+                        body: JSON.stringify({
+                            transaction_id: transactionId,
+                            status: status
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Close the modal
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('editTransactionModal'));
+                                modal.hide();
+
+                                // Refresh the table
+                                searchUsers(); // Reuse the search function to refresh with current search term
+                            } else {
+                                alert('Error updating transaction: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+
+                // Confirm delete button in delete modal
+                document.getElementById('confirmDelete').addEventListener('click', function () {
+                    const transactionId = this.getAttribute('data-transaction-id');
+
+                    // Send AJAX request to delete transaction
+                    fetch('/admin/delete_transaction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken() // Function to get CSRF token from cookie
+                        },
+                        body: JSON.stringify({
+                            transaction_id: transactionId
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Close the modal
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                                modal.hide();
+
+                                // Refresh the table
+                                searchUsers(); // Reuse the search function to refresh with current search term
+                            } else {
+                                alert('Error deleting transaction: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+
+            // Helper function to get CSRF token from cookie
+            function getCsrfToken() {
+                const name = 'csrf_token=';
+                const decodedCookie = decodeURIComponent(document.cookie);
+                const cookieArray = decodedCookie.split(';');
+
+                for (let i = 0; i < cookieArray.length; i++) {
+                    let cookie = cookieArray[i].trim();
+                    if (cookie.indexOf(name) === 0) {
+                        return cookie.substring(name.length, cookie.length);
+                    }
+                }
+                return '';
+            }
+
+        // To close the modal properly (for example, after saving changes)
+        document.addEventListener("DOMContentLoaded", function () {
+            const editTransactionModal = document.getElementById("editTransactionModal");
+
+            editTransactionModal.addEventListener("hidden.bs.modal", function () {
+                // Remove any lingering modal backdrop
+                document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+
+                // Ensure scrolling is restored
+                document.body.classList.remove("modal-open");
+                document.body.style.overflow = "auto";
+            });
+        });
+
+
+
+    </script>
+    
+
+{% endblock %}

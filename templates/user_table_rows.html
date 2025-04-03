@@ -1,0 +1,45 @@
+{% for account in users %}
+{% if account.is_admin == False %}
+<tr>
+    <th scope="row">{{ account.id }}</th>
+    <td>{{ account.user_id }}</td>
+    <td>{{ account.username }}</td>
+    <td>{{ account.email }}</td>
+    <td>
+        {% if account.status is none or account.status == 'None' %}
+        <p class="l-bg-green text-light p-2 mt-4 d-inline">None</p>
+        {% elif account.status == 'active' %}
+        <p class="l-bg-green text-light p-2 mt-4 d-inline">Active</p>
+        {% elif account.status == 'pending' %}
+        <p class="bg-warning text-dark p-2 mt-4 d-inline">Pending</p>
+        {% elif account.status == 'verified' %}
+        <p class="bg-success text-light p-2 mt-4 d-inline">Verified</p>
+        {% else %}
+        <p class="bg-secondary text-light p-2 mt-4 d-inline">{{ account.status }}</p>
+        {% endif %}
+    </td>
+    <td>
+        <div class="d-flex gap-2">
+            <button class="btn l-bg-pink text-white" data-bs-toggle="modal"
+                data-bs-target="#editUserModal{{ account.id }}">
+                Details
+            </button>
+            <button class="btn l-bg-green text-white" data-bs-toggle="modal" data-bs-target="#sendNotificationModal">
+                Send Notification
+            </button>
+            {% if account.status == 'active' %}
+            <button class="btn btn-danger text-white p-1">Deactivate</button>
+            {% elif account.status == 'pending' %}
+            <button class="btn btn-warning text-white p-1">Pending</button>
+            {% elif account.status == 'suspend' %}
+            <button class="btn l-bg-cyan text-white p-1">Unsuspend</button>
+            {% elif account.status == 'verified' %}
+            <button class="btn btn-success text-white p-1">Verified</button>
+            {% else %}
+            <button class="btn btn-success text-white p-1">Activate</button>
+            {% endif %}
+        </div>
+    </td>
+</tr>
+{% endif %}
+{% endfor %}

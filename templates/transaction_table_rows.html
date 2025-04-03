@@ -1,0 +1,33 @@
+{% for transaction in transactions %}
+<tr>
+    <th class="mt-3 pt-3" scope="row">{{ loop.index }}</th>
+    <td class="mt-3 pt-3">{{ transaction.transaction_id }}</td>
+    <td class="mt-3 pt-3">{{ transaction.created_at.strftime('%d-%m-%Y') }}</td>
+    <td class="mt-3 pt-3">{{ transaction.user.username }}</td>
+    <td class="mt-3 pt-3">{{ transaction.transaction_type }}</td>
+    <td class="mt-3 pt-3">{{ transaction.transaction_detail }}</td>
+    <td class="mt-3 pt-3">${{ transaction.amount }}</td>
+    <td class="mt-3 pt-3">
+        {% if transaction.status in ["Pending", "pending"] %}
+        <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+        {% elif transaction.status in ["Completed", "completed"] %}
+        <p class="bg-success text-white p-2 d-inline">Completed</p>
+        {% elif transaction.status in ["Failed", "failed"] %}
+        <p class="bg-danger text-white p-2 d-inline">Failed</p>
+        {% else %}
+        <p class="bg-secondary text-white p-2 d-inline">{{ transaction.status }}</p>
+        {% endif %}
+    </td>
+    <td>
+        <!-- Buttons -->
+        <div class="flex">
+            <button class="btn edit-btn" data-transaction-id="{{ transaction.id }}"><i
+                    class="fa fa-pencil l-bg-blue p-2 mb-4 rounded-2"></i></button>
+            <button class="btn delete-btn" data-transaction-id="{{ transaction.id }}"><i
+                    class="fa fa-trash l-bg-red p-2 mb-4 rounded-2"></i></button>
+            <button class="btn confirm-btn" data-transaction-id="{{ transaction.id }}"><i
+                    class="fa fa-check l-bg-green p-2 mb-4 rounded-2"></i></button>
+        </div>
+    </td>
+</tr>
+{% endfor %}

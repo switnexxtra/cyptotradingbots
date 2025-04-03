@@ -1,0 +1,690 @@
+
+{% extends "base.html" %}
+{% block content %}
+<!-- Bootstrap Links -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<!-- <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"> -->
+    <div class="wrapper d-flex align-items-stretch">
+
+        <nav id="sidebar" class="active">
+            <h1><a href="{{ url_for('main.home') }}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none"><span class="fa fa-home"></span> Home</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.investment') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-handshake"></span>
+                        Investment</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.loan') }}" class="text-decoration-none"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.transactions') }}" class="text-decoration-none"><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.profile') }}" class="text-decoration-none"><span class="fa fa-user-md"></span> Profile</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.kyc') }}" class="text-decoration-none"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+                
+                <li>
+                    <a href="{{ url_for('user.support') }}" class="text-decoration-none"><span class="fa fa-support"></span> Support</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.logout') }}" class="text-decoration-none"><span class="fa fa-sign-out"></span> Logout</a>
+                </li>
+            </ul>
+
+        </nav>
+
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+
+            <!-- <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> John Trevo! </span></p>
+                </div>
+
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle" width="40" height="40" alt="Profile">
+                </div>
+            </div> -->
+
+
+            <!-- Nav Content  -->
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
+                    </div>
+                </div>
+            </nav> -->
+
+            {% include 'user/header.html' %}
+
+
+            <!-- Plan Cards  -->
+            <div class="container">
+
+                <div class="plans_and_others_container mt-3">
+                    
+                    <!-- Relevant portion of investment.html -->
+                    <div class="row mt-3 mb-3">
+                        {% for plan in plans %}
+                        <div class="col-md-3 mb-5">
+                            <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                <div class="plan_card">
+                                    <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                        <div class="plan_header_card">
+                                            <h3 class="primary-color">{{ plan.name }}</h3>
+                                            <p>Every Day</p>
+                                        </div>
+                                        <div class="roi_card primary-bg-color pr-0">
+                                            <h5 class="text-white pl-2">ROI</h5>
+                                            <p class="text-white pl-2">{{ plan.roi }}%</p>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="plan_body_card">
+                                        <ul class="list-unstyled components mt-4 pr-1">
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                    <p class="mt-1">${{ "{:,}".format(plan.min_amount) }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                    <p class="mt-1">${{ "{:,}".format(plan.max_amount) }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                    <p class="mt-1">{{ plan.duration }} months</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                    <p class="mt-1">{{ plan.capital_back }}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-check-circle primary-color"></i> Instant Payout</p>
+                                                    <p class="mt-1">Yes</p>
+                                                </div>
+                                            </li>
+                                            <!-- User Balance for this Investment Plan -->
+                                            <li>
+                                                <div class="d-flex justify-content-between">
+                                                    <p><i class="fa fa-wallet primary-color"></i> Your Balance</p>
+                                                    {% set plan_balance = user.investments | selectattr("plan_id", "equalto", plan.id) |
+                                                    map(attribute="amount") | sum %}
+                                                    <p class="mt-1">${{ "{:,.2f}".format(plan_balance) }}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                    
+                                <div class="button-container">
+                                    {% set user_investments = user.investments | selectattr("plan_id", "equalto", plan.id) | list %}
+                                    {% set enrolled_plans = user.investments | map(attribute="plan_id") | list %}
+                                    {% set user_highest_min_amount = highest_plan.min_amount if highest_plan else 0 %}
+                                    
+                                    <form action="{{ url_for('user.subscribe', plan_id=plan.id) }}" method="post">
+                                        <input type="number" name="amount" placeholder="Enter Investment amount" required class="form-control mb-2">
+                                    
+                                        {% if user_investments %}
+                                        <!-- User is already enrolled in this plan -->
+                                        <button type="submit" class="btn primary-bg-color">Invest More</button>
+                                        <button type="button" class="btn l-bg-cherry mt-1" data-bs-toggle="modal" data-bs-target="#withdrawModal{{ plan.id }}">
+                                            Withdraw
+                                        </button>
+                                    
+                                        {% elif plan.min_amount > user_highest_min_amount %}
+                                        <!-- Plan has a higher min_amount than user's current highest -->
+                                        <button type="submit" class="btn primary-bg-color">Invest</button>
+                                    
+                                        {% if enrolled_plans | length > 0 %}
+                                        <button type="submit" class="btn l-bg-teal mt-1" formaction="{{ url_for('user.upgrade', plan_id=plan.id) }}">
+                                            Upgrade Plan
+                                        </button>
+                                        {% endif %}
+                                        {% endif %}
+                                    </form>
+
+                                    <!-- Withdrawal Modal - Now tied to the plan ID -->
+                                    {% if user_investments %}
+                                    <div class="modal fade" id="withdrawModal{{ plan.id }}" tabindex="-1"
+                                        aria-labelledby="withdrawModalLabel{{ plan.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="withdrawModalLabel{{ plan.id }}">Withdraw Funds from {{
+                                                        plan.name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ url_for('user.withdraw_from_plan', plan_id=plan.id) }}" method="post">
+                                                        {% set plan_balance = user.investments | selectattr("plan_id", "equalto", plan.id) |
+                                                        map(attribute="amount") | sum %}
+                    
+                                                        <div class="mb-3">
+                                                            <p>Available balance: ${{ "{:,.2f}".format(plan_balance) }}</p>
+                    
+                                                            {% set has_early_withdrawal = user.investments | selectattr("plan_id",
+                                                            "equalto", plan.id) |
+                                                            selectattr("end_date", "gt", now) | list %}
+                    
+                                                            {% if has_early_withdrawal %}
+                                                            <div class="alert alert-warning">
+                                                                <strong>Early Withdrawal Warning:</strong> A 30% penalty will be applied.
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                    
+                                                        <label for="withdraw_amount{{ plan.id }}">Enter Withdrawal Amount:</label>
+                                                        <input type="number" name="withdraw_amount" id="withdraw_amount{{ plan.id }}"
+                                                            min="1" max="{{ plan_balance }}" step="0.01" required class="form-control mb-3">
+                    
+                                                        <button type="submit" class="btn btn-success">Confirm Withdrawal</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+
+            
+            
+            <!-- <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    let withdrawModal = document.getElementById("withdrawModal");
+
+                    // When "Withdraw" button is clicked, update modal content
+                    document.querySelectorAll("[data-toggle='modal']").forEach(button => {
+                        button.addEventListener("click", function () {
+                            let investmentId = this.getAttribute("data-investment-id");
+                            let endDate = new Date(this.getAttribute("data-end-date"));
+                            let today = new Date();
+
+                            let message = (today < endDate)
+                                ? "Early withdrawal will incur a 30% penalty on your investment amount."
+                                : "Your investment has matured. No penalty will be applied.";
+
+                            document.getElementById("withdraw-message").innerText = message;
+
+                            // Update form action dynamically
+                            let withdrawForm = document.getElementById("withdraw-form");
+                            withdrawForm.action = `/withdraw_investment/${investmentId}`;
+                        });
+                    });
+                });
+            </script> -->
+
+                    <!-- <div class="plans_and_others_container">
+                        <div class="row mt-3 mb-3">
+                            <div class="col-md-3 mb-5">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Basic</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">10.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$100.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$1,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">3 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Basic Pro</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">15.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$300.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$1,300.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">4 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Max</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">25.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$500.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$1,500.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">5 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Max Pro</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">35.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$700.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$2,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">6 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Premium</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">40.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$3,500.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$5,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">7 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Gold</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">50.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$5,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$10,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">8 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Platinum</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">70.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$7,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$10,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">9 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <div class="plans_and_others_card small-card pt-0 pl-2 pb-0">
+                                    <div class="plan_card">
+                                        <div class="plan_top_card pr-0 d-flex justify-content-between">
+                                            <div class="plan_header_card">
+                                                <h3 class="primary-color">Investor</h3>
+                                                <p>Every Day</p>
+                                            </div>
+                                            <div class="roi_card primary-bg-color pr-0">
+                                                <h5 class="text-white pl-2">ROI</h5>
+                                                <p class="text-white pl-2">100.00%</p>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="plan_body_card">
+                                            <ul class="list-unstyled components mt-4 pr-1">
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Minimum</p>
+                                                        <p class="mt-1">$10,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Maximum</p>
+                                                        <p class="mt-1">$15,000.00</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Duration</p>
+                                                        <p class="mt-1">10 months</p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="d-flex justify-content-between">
+                                                        <p><i class="fa fa-check-circle primary-color"></i> Capital back</p>
+                                                        <p class="mt-1">No</p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="button-container">
+                                        <button class="btn primary-bg-color">Invest now</button>
+                                        <button class="btn btn-secondary mt-1">Invest using balance</button>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                        </div>
+                    </div>
+                </div> -->
+
+                
+{% endblock %}
+            

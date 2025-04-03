@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <!-- <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" /> -->
+    
+    <!-- Bootstrap CSS (Include in <head>) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+    
+  <body class="page-user">
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar" class="active">
+            <h1><a href="{{url_for('main.home')}}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{url_for('admin.dashboard')}}" class="text-decoration-none"><span class="fa fa-home"></span>
+                        Home</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.investment')}}" class="text-decoration-none"
+                        >
+                        <span class="fa fa-handshake"></span>
+                        Investment
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.loan')}}" class="text-decoration-none"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.transactions')}}" class="text-decoration-none"><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.users')}}" class="text-decoration-none"><span class="fa fa-user-md"></span>
+                        Users</a>
+                </li>
+                <li>
+                    <a href="{{url_for('admin.kyc')}}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+        
+                <li>
+                    <a href="{{url_for('user.support')}}" class="text-decoration-none"><span class="fa fa-support"></span>
+                        Support</a>
+                </li>
+                <li>
+                    <a href="{{url_for('auth.logout')}}" class="text-decoration-none"><span class="fa fa-sign-out"></span>
+                        Logout</a>
+                </li>
+            </ul>
+        
+        </nav>
+        
+        
+        
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+        
+            <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }} </span></p>
+                </div>
+        
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender == 'male' %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40" height="40"
+                        alt="Profile">
+                    {% elif user.gender == 'female' %}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40" height="40"
+                        alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40" height="40"
+                        alt="Profile">
+                    {% endif %}
+                </div>
+            </div>
+        
+        
+            <!-- Nav Content  -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+        
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+        
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
+                    </div>
+                </div>
+            </nav>
+            
+
+            
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body {
+                    background-color: #f8f9fa;
+                }
+        
+                .table-container {
+                    margin-top: 50px;
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+        
+                .modal-body img {
+                    width: 100%;
+                    border-radius: 5px;
+                }
+
+                .modal-body p {
+                    font-size: 17px !important;
+                }
+            </style>
+            
+            <!-- Transaction section -->
+            <div class="container refferal_container">
+            
+                <h5 class="all_refferals text-center">
+                    All Registered KYC Users
+                </h5>
+            
+            
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto bg-white rounded shadow p-3">
+            
+                            <!-- Table with fixed header and scrolling body -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover table-fixed">
+                                    <!-- KYC Table -->
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Document Type</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for kyc in kyc_records %}
+                                            <tr>
+                                                <td><h6 class="p-1">{{ kyc.user.fullname }} </h6></td>
+                                                <td><h6 class="p-1">{{ kyc.document_type }} </h6></td>
+                                                <td> <h6 class=" p-1 mt-1
+                                                    {% if kyc.status == 'pending' %} bg-warning text-light text-center rounded-pill 
+                                                    {% elif kyc.status == 'failed' %} bg-danger text-light text-center rounded-pill
+                                                    {% elif kyc.status == 'verified' %} bg-success text-light text-center rounded-pill
+                                                    {% else %} text-secondary 
+                                                    {% endif %}
+                                                    ">
+                                                    {{ kyc.status }}</h6></td>
+                                                <td>
+                                                    <!-- Fixed "View" Button -->
+                                                    <button class="btn l-bg-blue text-light  view-btn p-1 " data-bs-toggle="modal" data-bs-target="#kycModal{{ kyc.id }}">
+                                                        View
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                    
+                                            <!-- KYC Details Modal -->
+                                            <div class="modal fade" id="kycModal{{ kyc.id }}" tabindex="-1" aria-labelledby="kycModalLabel{{ kyc.id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title">KYC Details for {{ kyc.user.fullname }}</h3>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p><strong>Full Name:</strong> {{ kyc.first_name }} {{ kyc.last_name }}</p>
+                                                            <hr>
+                                                            <p><strong>Gender:</strong> {{ kyc.gender }}</p>
+                                                            <hr>
+                                                            <p><strong>City:</strong> {{ kyc.city }}</p>
+                                                            <hr>
+                                                            <p><strong>Country:</strong> {{ kyc.country }}</p>
+                                                            <hr>
+                                                            <p><strong>Status:</strong> {{ kyc.status }}</p>
+                                                            <hr>
+                                                            <p><strong>Document Type:</strong> {{ kyc.document_type }}</p>
+                                                            
+                                                            <hr>
+                                                            <p><strong>Document Front:</strong></p>
+                                                            {% if kyc.document_front %}
+                                                            <img src="{{ url_for('static', filename='uploads/' + kyc.document_front) }}" class="img-fluid">
+                                                            {% else %}
+                                                            <p>No document uploaded</p>
+                                                            <hr>
+                                                            {% endif %}
+                                    
+                                                            <p><strong>Document Back:</strong></p>
+                                                            <hr>
+                                                            {% if kyc.document_back %}
+                                                            <img src="{{ url_for('static', filename='uploads/' + kyc.document_back) }}" class="img-fluid">
+                                                            {% else %}
+                                                            <p>No document uploaded</p>
+                                                            <hr>
+                                                            {% endif %}
+                                    
+                                                            <p><strong>Selfie with Document:</strong></p>
+                                                            <hr>
+                                                            {% if kyc.selfie_with_document %}
+                                                            <img src="{{ url_for('static', filename='uploads/' + kyc.selfie_with_document) }}"
+                                                                class="img-fluid">
+                                                            {% else %}
+                                                            <p>No selfie uploaded</p>
+                                                            <hr>
+                                                            {% endif %}
+
+                                                            <!-- KYC Status Update Form -->
+                                                            <form action="{{ url_for('admin.update_kyc_status', kyc_id=kyc.id) }}" method="POST">
+                                                                <label for="status"><strong>KYC Status: {{ kyc.status }}</strong></label>
+                                                                <select name="status" class="form-control">
+                                                                    <option value="pending" {% if kyc.status=='pending' %}selected{% endif %}>Pending</option>
+                                                                    <option value="failed" {% if kyc.status=='failed' %}selected{% endif %}>Failed</option>
+                                                                    <option value="verified" {% if kyc.status=='verified' %}selected{% endif %}>verified</option>
+                                                                </select>
+                                                                <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+                                                            </form>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </table>
+
+                            </div> <!-- End -->
+                        </div>
+                    </div>
+            
+                </div>
+            </div>            
+        </div>
+
+    </div>
+    
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- jQuery (for dynamic content) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    
+    <!-- jQuery (for dynamic content) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- jQuery & Bootstrap JS (Include before </body>) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery.min.js') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/popper.js') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/index.js') }}">
+{% endblock %}

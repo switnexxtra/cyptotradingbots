@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block head %}
+<!-- Bootstrap Links -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/themify-icons.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/owl.carousel.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/kyc.css') }}" rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<!-- <link href="{{ url_for('static', filename='css/bootstrap.min1.css') }}" rel="stylesheet"> -->
+{% endblock %}
+{% block content %}
+
+    <div class="wrapper d-flex align-items-stretch">
+
+        <nav id="sidebar" class="active">
+            <h1><a href="{{ url_for('main.home') }}" class="logo">M.</a></h1>
+            <ul class="list-unstyled components mb-5 mt-5">
+                <li class="active">
+                    <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none"><span class="fa fa-home"></span> Home</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.investment') }}" class="text-decoration-none"><span class="fa fa-handshake"></span>
+                        Investment</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.loan') }}" class="text-decoration-none"><span class="fa fa-money"></span> Loan</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.transactions') }}" class="text-decoration-none"
+                        ><span class="fa fa-book"></span>
+                        Transaction history</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.profile') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-user-md"></span> Profile</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('user.kyc') }}" class="text-decoration-none"><span class="fa fa-users"></span> Kyc</a>
+                </li>
+                
+                <li>
+                    <a href="{{ url_for('user.support') }}" class="text-decoration-none"><span class="fa fa-support"></span> Support</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.logout') }}" class="text-decoration-none"><span class="fa fa-sign-out"></span> Logout</a>
+                </li>
+            </ul>
+
+        </nav>
+
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+
+            <!-- <div class="profile-container d-flex justify-content-between align-items-center">
+                <div class="text-center">
+                    <p class="pt-2 user-name">Hello, <span> {{ user.username }}! </span></p>
+                </div>
+            
+                <div class="d-flex align-items-center ms-auto">
+                    <i class="fa fa-bell fa-lg mx-2"></i>
+                    <i class="fa fa-envelope fa-lg mx-2"></i>
+                    <i class="fa fa-cog fa-lg mx-2"></i>
+                    {% if user.gender == 'male' %}
+                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40"
+                        height="40" alt="Profile">
+                    {% elif user.gender == 'female' %}
+                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40"
+                        height="40" alt="Profile">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40"
+                        height="40" alt="Profile">
+                    {% endif %}
+                </div>
+            </div> -->
+            
+            
+            
+            <!-- Nav Content  -->
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
+                <div class="container-fluid">
+            
+                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+            
+                    <div class="align-items-center text-center justify-content-center">
+                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
+                    </div>
+                </div>
+            </nav> -->
+            {% include 'user/header.html' %}
+
+
+            <div class="container rounded bg-white mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-3 border-right">
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                            <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry mt-5" width="150px" 
+                                alt="Profile">
+                            <span class="font-weight-bold">{{ user.fullname }}</span>
+                            <span class="text-black-50">{{ user.email }}</span>
+                        </div>
+
+                        <div class="container pb-3">
+                            <p class="refferal_text">
+                                Your Wallet ID:
+                            </p>
+                        </div>
+                        
+                        <div class="container d-flex">
+                            <input type="text" id="copyText" class="form-control" value="{{ user.wallet_id }}" readonly>
+                            <button class="copy-btn" onclick="copyToClipboard()">
+                                <i class="fa fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-5 border-right">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Profile Settings</h4>
+                            </div>
+                            <form action="{{ url_for('user.update_profile') }} " method="post">                            
+                                <div class="row mt-2">
+                                    <div class="col-md-6"><label class="labels">Name</label>
+                                        <input type="text" name="fname" class="form-control" placeholder="First name" value="{{ user.fullname }}" required>
+                                    </div>
+                                    <div class="col-md-6"><label class="labels">Username</label>
+                                        <input type="text" name="username" class="form-control" placeholder="username" value="{{ user.username }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12"><label class="labels">Mobile Number</label>
+                                        <input type="text" name="mobile" class="form-control" placeholder="Enter phone number"
+                                            value="{{ user.mobile }}" required>
+                                    </div>
+                                    <div class="col-md-12"><label class="labels">Address Line 1</label>
+                                        <input type="text" name="line1" class="form-control" placeholder="Enter address line 1"
+                                            value="{{ user.line1 }}" required>
+                                    </div>
+                                    <div class="col-md-12"><label class="labels">Address Line 2</label>
+                                        <input type="text" name="line2" class="form-control" placeholder="Enter address line 2"
+                                            value="{{ user.line2 }}" required>
+                                    </div>
+                                    <div class="col-md-12"><label class="labels">Postcode</label>
+                                        <input type="text" name="postal" class="form-control" placeholder="Enter postcode"
+                                            value="{{ user.postal }}" required>
+                                    </div>
+                                    <div class="col-md-12"><label class="labels">Email ID</label>
+                                        <input type="text" name="email" class="form-control" placeholder="Enter email ID" value="{{ user.email }}" required>
+                                    </div>
+                                    <div class="col-md-12"><label class="labels">Date Of Birth</label>
+                                        <input type="date" name="dob" class="form-control" placeholder="dateofbirth" value="{{ user.dateofbirth }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6"><label class="labels">Country</label>
+                                        <input type="text" name="country" class="form-control" placeholder="Country" value="{{ user.country }}" required>
+                                    </div>
+                                    <div class="col-md-6"><label  class="labels">State/Region</label>
+                                        <input type="text" name="region" class="form-control" placeholder="State" value="{{ user.region }}" required>
+                                    </div>
+                                </div>
+                                <div class="mt-5 text-center">
+                                    <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                                </div>
+                            </form>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 py-5">
+                            <form action="{{ url_for('user.update_pin') }}" method="post">
+                                <div class="d-flex justify-content-between align-items-center experience">
+                                    <span>Edit Transaction Pin</span>
+                                    <button class="border px-3 p-1 add-experience btn l-bg-green" type="submit"><i class="fa fa-pencil"></i>&nbsp;Edit Transaction Pin</button>
+                                </div>
+                                <br>
+                                <div class="col-md-12"><label class="labels">Add Transaction Pin</label>
+                                    <input type="number" name="pin" class="form-control" placeholder="Enter 6 digit Transaction Pin" value="{{ user.experience }}" required>
+                                </div>
+                                <br>
+                                <div class="col-md-12"><label class="labels">Confirm Transaction Pin</label>
+                                    <input type="number" name="confirmpin" class="form-control" placeholder="confirm Transaction Pin"
+                                        value="{{ user.additional_details }}" required>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="container rounded bg-white mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-3 border-right">
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
+                                width="150px"
+                                src="{{ url_for('static', filename='img/profile.jpg') }}"><span
+                                class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span>
+                            </span></div>
+                    </div>
+                    <div class="col-md-5 border-right">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Profile Settings</h4>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control"
+                                        placeholder="first name" value=""></div>
+                                <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control"
+                                        value="" placeholder="surname"></div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
+                                        class="form-control" placeholder="enter phone number" value=""></div>
+                                <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text"
+                                        class="form-control" placeholder="enter address line 1" value=""></div>
+                                <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text"
+                                        class="form-control" placeholder="enter address line 2" value=""></div>
+                                <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control"
+                                        placeholder="enter address line 2" value=""></div>
+                                <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control"
+                                        placeholder="enter address line 2" value=""></div>
+                                <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control"
+                                        placeholder="enter address line 2" value=""></div>
+                                <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control"
+                                        placeholder="enter email id" value=""></div>
+                                <div class="col-md-12"><label class="labels">Education</label><input type="text"
+                                        class="form-control" placeholder="education" value=""></div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control"
+                                        placeholder="country" value=""></div>
+                                <div class="col-md-6"><label class="labels">State/Region</label><input type="text"
+                                        class="form-control" value="" placeholder="state"></div>
+                            </div>
+                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save
+                                    Profile</button></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center experience"><span>Edit
+                                    Experience</span><span class="border px-3 p-1 add-experience"><i
+                                        class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
+                            <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
+                                    class="form-control" placeholder="experience" value=""></div> <br>
+                            <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
+                                    class="form-control" placeholder="additional details" value=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- </div>
+            </div> -->
+            
+        </div>
+
+
+    </div>
+    
+{% endblock %}

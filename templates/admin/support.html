@@ -1,0 +1,65 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Support Chat{% endblock %}
+
+{% block content %}
+<h2>Support Chats</h2>
+
+{% if chat_data %}
+<div class="row mb-3">
+    <div class="col">
+        <form method="GET" class="d-flex">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="filter" id="filter-all" value="all" {% if
+                    request.args.get('filter') !='resolved' %}checked{% endif %}>
+                <label class="form-check-label" for="filter-all">All</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="filter" id="filter-resolved" value="resolved" {% if
+                    request.args.get('filter')=='resolved' %}checked{% endif %}>
+                <label class="form-check-label" for="filter-resolved">Resolved</label>
+            </div>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Apply</button>
+        </form>
+    </div>
+</div>
+
+<div class="list-group">
+    {% for item in chat_data %}
+    {% set chat = item.chat %}
+    {% set unread_count = item.unread_count %}
+
+    {% if (request.args.get('filter') != 'resolved' and not chat.is_resolved) or
+    (request.args.get('filter') == 'resolved' and chat.is_resolved) or
+    (request.args.get('filter') != 'resolved' and request.args.get('filter') != 'open') %}
+    <a href="{{ url_for('admin.view_chat', chat_id=chat.id) }}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ chat.subject }}</h5>
+            <small>{{ chat.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+        <div class="d-flex w-100 justify-content-between">
+            <p class="mb-1">
+                <strong>User:</strong> {{ chat.user.username }}
+                {% if chat.messages.first() %}
+                - {{ chat.messages.first().content[:50] }}{% if chat.messages.first().content|length > 50 %}...{% endif
+                %}
+                {% endif %}
+            </p>
+            <span class="badge {% if chat.is_resolved %}status-badge-resolved{% else %}status-badge-open{% endif %}">
+                {{ 'Resolved' if chat.is_resolved else 'Open' }}
+            </span>
+        </div>
+        {% if unread_count > 0 %}
+        <small><span class="badge unread-badge">{{ unread_count }} new</span></small>
+        {% endif %}
+    </a>
+    {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    There are no support chats in the system.
+</div>
+{% endif %}
+{% endblock %}

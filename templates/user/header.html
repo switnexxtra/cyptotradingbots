@@ -1,0 +1,200 @@
+<style>
+    /* Notification Dropdown */
+    .notification-box {
+        position: absolute;
+        top: 40px;
+        right: 0;
+        width: 320px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        z-index: 1000;
+    }
+
+    .notification-box .list-group-item {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .notification-box .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .notification-box .text-muted {
+        font-size: 12px;
+    }
+
+</style>
+
+
+<div class="profile-container d-flex justify-content-between align-items-center">
+    <div class="text-center">
+        <p class="pt-2 user-name">Hello, <span> {{ user.username }} </span></p>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+        <!-- <i class="fa fa-bell fa-lg mx-2"></i> -->
+        <!-- Notification Bell with Dropdown -->
+        <div class="position-relative">
+            <i class="fa fa-bell fa-lg mx-2 text-dark" id="notification-bell" onclick="toggleNotifications()"
+                style="cursor: pointer;">
+            </i>
+
+            <!-- Red dot for new notifications -->
+            <span id="notification-dot"
+                class="badge bg-danger position-absolute top-0 start-0 translate-middle rounded-pill"
+                style="display: {% if unread_count > 0 %}inline{% else %}none{% endif %};">
+            </span>
+
+            <div id="notification-dropdown" class="notification-box shadow-lg rounded" style="display: none;">
+                <div class="p-3 border-bottom d-flex justify-content-between">
+                    <h6 class="mb-0">Notifications</h6>
+                    <button class="btn btn-sm btn-link text-danger btn-close ms-2"
+                        onclick="closeNotifications()"></button>
+                </div>
+                <div id="notifications-list" class="list-group list-group-flush"
+                    style="max-height: 300px; overflow-y: auto;">
+                    {% for notification in notifications %}
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                        <span>{{ notification.message }}</span>
+
+                        {% if "bonus" in notification.message.lower() and "claimed" not in notification.message.lower()
+                        %}
+                        <form action="{{ url_for('user.claim_bonus') }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">Claim</button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Dismiss Button -->
+                        <!-- <a href="{{ url_for('user.mark_notification_read', notif_id=notification.id) }}" class="btn-close"></a> -->
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="p-2 text-center border-top">
+                    <a href="{{ url_for('user.get_notifications') }}" class="btn btn-sm btn-light w-100">View All</a>
+                </div>
+            </div>
+        </div>
+
+
+        <i class="fa fa-envelope fa-lg mx-2"></i>
+        <i class="fa fa-cog fa-lg mx-2"></i>
+        {% if user.gender == 'male' %}
+        <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40"
+            height="40" alt="Profile">
+        {% elif user.gender == 'female' %}
+        <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40"
+            height="40" alt="Profile">
+        {% else %}
+        <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40"
+            height="40" alt="Profile">
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- Nav Content  -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+
+        <button type="button" id="sidebarCollapse" class="btn toggle-btn">
+            <i class="fa fa-bars"></i>
+            <span class="sr-only">Toggle Menu</span>
+        </button>
+
+        <div class="align-items-center text-center justify-content-center">
+            <p class="pt-2 pr-3 balance">Balance: <span>${{ "{:,}".format(user.balance) }}</span></p>
+        </div>
+    </div>
+</nav>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchNotifications();
+    });
+
+    function fetchNotifications() {
+        fetch('/notifications')
+            .then(response => response.json())
+            .then(data => {
+                let count = data.length;
+                let countElement = document.getElementById('notification-count');
+                let listElement = document.getElementById('notifications-list');
+
+                if (count > 0) {
+                    countElement.textContent = count;
+                    countElement.style.display = 'inline';
+                } else {
+                    countElement.style.display = 'none';
+                }
+
+                listElement.innerHTML = '';
+                data.forEach(notification => {
+                    let item = document.createElement('div');
+                    item.className = 'list-group-item';
+                    item.innerHTML = `
+                    <div class="d-flex flex-column">
+                        <small>${notification.message}</small>
+                        <small class="text-muted">${notification.created_at}</small>
+                    </div>
+                `;
+                    listElement.appendChild(item);
+                });
+            });
+    }
+
+    function toggleNotifications() {
+        let dropdown = document.getElementById('notification-dropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function markNotificationsRead() {
+        fetch('/mark_notifications_read', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('notification-count').style.display = 'none';
+                    document.getElementById('notifications-list').innerHTML = '<div class="p-2 text-center text-muted">No new notifications</div>';
+                }
+            });
+    }
+
+
+    function closeNotifications() {
+        document.getElementById("notification-dropdown").style.display = "none";
+    }
+
+    function dismissNotification(notifId) {
+        fetch(`/notifications/dismiss/${notifId}`, { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("notification-dropdown").innerHTML = data.updatedNotificationsHtml;
+                }
+            });
+    }
+
+    function toggleNotifications() {
+        let dropdown = document.getElementById('notification-dropdown');
+        let redDot = document.getElementById('notification-dot');
+
+        if (dropdown.style.display === "none") {
+            dropdown.style.display = "block";
+            redDot.style.display = "none"; // Hide red dot when opened
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    function closeNotifications() {
+        document.getElementById('notification-dropdown').style.display = "none";
+    }
+
+
+</script>
