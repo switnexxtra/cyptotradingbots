@@ -183,38 +183,51 @@ def update_user(user_id):
         flash(f'Bonus of ${new_bonus} added to pending bonus for {user.username}', 'success')
 
     # Handle balance update
-    new_balance = request.form.get('balance', type=float)
-    total_profit = request.form.get('total_profit', type=float)
-    estimated_profit = request.form.get('estimated_profit', type=float)
-    profit_per_day = request.form.get('profit_per_day', type=float)
-    profit_per_hour = request.form.get('profit_per_hour', type=float)
-    profit_per_min = request.form.get('profit_per_min', type=float)
-    profit_per_sec = request.form.get('profit_per_sec', type=float)
-    if new_balance is not None:
-        user.balance = new_balance
+    # new_balance = request.form.get('balance', type=float)
+    # total_profit = request.form.get('total_profit', type=float)
+    # estimated_profit = request.form.get('estimated_profit', type=float)
+    # profit_per_day = request.form.get('profit_per_day', type=float)
+    # profit_per_hour = request.form.get('profit_per_hour', type=float)
+    # profit_per_min = request.form.get('profit_per_min', type=float)
+    # profit_per_sec = request.form.get('profit_per_sec', type=float)
+    # if new_balance is not None:
+    #     user.balance = new_balance
         
         
-    if total_profit is not None:
-        user.total_profit = total_profit
+    # if total_profit is not None:
+    #     user.total_profit = total_profit
             
-    if estimated_profit is not None:
-        user.estimated_profit = estimated_profit
+    # if estimated_profit is not None:
+    #     user.estimated_profit = estimated_profit
             
-    if profit_per_day is not None:
-        user.profit_per_day = profit_per_day
+    # if profit_per_day is not None:
+    #     user.profit_per_day = profit_per_day
             
-    if profit_per_hour is not None:
-        user.profit_per_hour = profit_per_hour
+    # if profit_per_hour is not None:
+    #     user.profit_per_hour = profit_per_hour
             
-    if profit_per_min is not None:
-        user.profit_per_min = profit_per_min
+    # if profit_per_min is not None:
+    #     user.profit_per_min = profit_per_min
             
-    if profit_per_sec is not None:
-        user.profit_per_sec = profit_per_sec
+    # if profit_per_sec is not None:
+    #     user.profit_per_sec = profit_per_sec
         
-    flash(f'User balance updated ', 'success')
+    # flash(f'User balance updated ', 'success')
+
+    # db.session.commit()
+    
+    # Handle balance update
+    numeric_fields = ['balance', 'total_profit', 'estimated_profit', 'profit_per_day', 'profit_per_hour', 'profit_per_min', 'profit_per_sec']
+    for field in numeric_fields:
+        new_value = request.form.get(field)
+        if new_value:
+            try:
+                setattr(user, field, float(new_value))  # Convert and assign
+            except ValueError:
+                flash(f'Invalid value for {field}.', 'danger')
 
     db.session.commit()
+    flash(f'User {user.username} updated successfully!', 'success')
     return redirect(url_for('admin.users'))
 
 
