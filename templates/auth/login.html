@@ -13,6 +13,7 @@
 
     {% block content %}
     <section class="container">
+        <a href="{{url_for('main.home')}}" class="text-light"><i class="fa fa-arrow-left"></i></a>
         <h2>Login Form</h2>
         <form action="{{ url_for('auth.login') }}" class="form" method="POST">
             <div class="input-box">
