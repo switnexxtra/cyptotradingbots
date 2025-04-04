@@ -12,6 +12,8 @@
 
     {% block content %}
     <section class="container">
+        <a href="{{url_for('main.home')}}" class="text-light"><i class="fa fa-arrow-left"></i></a>
+
         <header>Registration Form</header>
         <form action="{{url_for('auth.register')}}" class="form" method="POST">
 
