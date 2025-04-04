@@ -560,9 +560,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:,}".format(investment.total_profit | default(0)) }}
-
-
+                                                        ${{ "{:,}".format(user.total_profit | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -587,7 +585,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:,}".format(investment.estimated_profit | default(0)) }}
+                                                        ${{ "{:,}".format(user.estimated_profit | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -617,7 +615,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(investment.profit_per_day | default(0)) }}
+                                                        ${{ "{:.9f}".format(user.profit_per_day | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -644,7 +642,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(investment.profit_per_hour | default(0)) }}
+                                                        ${{ "{:.9f}".format(user.profit_per_hour | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -670,7 +668,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(investment.profit_per_min | default(0)) }}
+                                                        ${{ "{:.9f}".format(user.profit_per_min | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
