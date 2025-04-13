@@ -288,17 +288,26 @@ def update_user(user_id):
                 setattr(user, field, float(new_value))  # Convert and assign
             except ValueError:
                 flash(f'Invalid value for {field}.', 'danger')
+                
+    # Handle balance update
+    total_profit = request.form.get('total_profit', type=float)
+    estimated_profit = request.form.get('estimated_profit', type=float)
+    profit_per_day = request.form.get('profit_per_day', type=float)
+    profit_per_hour = request.form.get('profit_per_hour', type=float)
+    profit_per_min = request.form.get('profit_per_min', type=float)
+    profit_per_sec = request.form.get('profit_per_sec', type=float)
+    revenue_today = request.form.get('revenue_today', type=float)
 
     # Add user's total profit to each of their investments
-    # Update each investment's fields directly from the form
     for investment in user.investments:
-        for field in numeric_fields:
-            new_value = request.form.get(f'{field}_investment')  # Expects form input like profit_per_min_investment
-            if new_value:
-                try:
-                    setattr(investment, field, float(new_value))
-                except ValueError:
-                    pass  # Ignore invalid input
+        investment.total_profit = total_profit  # Add user's profit to each investment's total profit
+        investment.estimated_profit = estimated_profit  # Add user's profit to each investment's total profit
+        investment.profit_per_day = profit_per_day  # Add user's profit to each investment's total profit
+        investment.profit_per_hour = profit_per_hour  # Add user's profit to each investment's total profit
+        investment.profit_per_min = profit_per_min  # Add user's profit to each investment's total profit
+        investment.profit_per_sec = profit_per_min  # Add user's profit to each investment's total profit
+        investment.revenue_today = revenue_today  # Add user's profit to each investment's total profit
+        db.session.commit()  # Commit after updating each investment's total profit
 
     db.session.commit()
     flash(f'User {user.username} updated successfully!', 'success')
