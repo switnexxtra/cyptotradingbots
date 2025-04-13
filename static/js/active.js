@@ -4,11 +4,28 @@
     var browserWindow = $(window);
 
     // :: 1.0 Preloader Active Code
-    browserWindow.on('load', function () {
-        $('#preloader').fadeOut('slow', function () {
-            $(this).remove();
+    // browserWindow.ready('load', function () {
+    //     $('#preloader').fadeOut('slow', function () {
+    //         $(this).remove();
+    //     });
+    // });
+
+    AOS.init({
+        duration: 1200,
+    })
+
+
+    try {
+        $(window).on('load', function () {
+            console.log("Page fully loaded. Hiding preloader.");
+            $('#preloader').fadeOut('slow', function () {
+                $(this).remove();
+            });
         });
-    });
+    } catch (e) {
+        console.error("Error in preloader:", e);
+    }
+
 
     // :: 2.0 Nav Active Code
     if ($.fn.classyNav) {
