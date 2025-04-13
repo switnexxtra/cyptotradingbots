@@ -5,6 +5,8 @@
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@400;500;700;900&display=swap"
             rel="stylesheet">
@@ -13,6 +15,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         <!-- Libraries Stylesheet -->
         <!-- <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"> -->
         <link href="{{ url_for('static', filename='css/style.css.map') }}" rel="stylesheet">
@@ -26,6 +29,7 @@
         <link href="{{ url_for('static', filename='lib1/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='lib1/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
+
         <title>{% block title %}Crypto Trading Bot{% endblock %}</title>
 
         <!-- Favicon -->
@@ -33,9 +37,9 @@
 
 
         <!-- ##### Preloader ##### -->
-        <div id="preloader">
+        <!-- <div id="preloader">
             <i class="circle-preloader"></i>
-        </div>
+        </div> -->
 
         <!-- ##### Header Area Start ##### -->
         <header class="header-area">
@@ -223,7 +227,14 @@
         <!-- ##### Hero Area End ##### -->
 
         <!-- ##### Course Area Start ##### -->
-        <div class="cryptos-feature-area section-padding-100-0">
+        <div class="cryptos-feature-area section-padding-100-0" data-aos="fade-right" 
+            data-aos-offset="200"
+            data-aos-delay="30"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out"
+            data-aos-mirror="true"
+            data-aos-once="false"
+            data-aos-anchor-placement="top-center">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
@@ -239,7 +250,15 @@
                 
                 <div class="row">
                     <!-- Single Course Area -->
-                    <div class="col-12 col-md-6 col-xl-3">
+                    <div class="col-12 col-md-6 col-xl-3"
+                        data-aos="fade-up" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="single-feature-area mb-100 text-center">
                             <i class="icon-safebox"></i>
                             <h3>Fast &amp; Easy</h3>
@@ -251,7 +270,15 @@
                     </div>
 
                     <!-- Single Course Area -->
-                    <div class="col-12 col-md-6 col-xl-3">
+                    <div class="col-12 col-md-6 col-xl-3"
+                        data-aos="fade-up" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="single-feature-area active mb-100 text-center">
                             <i class="icon-bitcoin"></i>
                             <h3>24/7 Earnings</h3>
@@ -264,7 +291,14 @@
                     </div>
 
                     <!-- Single Course Area -->
-                    <div class="col-12 col-md-6 col-xl-3">
+                    <div class="col-12 col-md-6 col-xl-3"data-aos="fade-up" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="single-feature-area mb-100 text-center">
                             <i class="icon-exchange"></i>
                             <h3>Big Commisions</h3>
@@ -277,7 +311,14 @@
                     </div>
 
                     <!-- Single Course Area -->
-                    <div class="col-12 col-md-6 col-xl-3">
+                    <div class="col-12 col-md-6 col-xl-3"data-aos="fade-up" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="single-feature-area mb-100 text-center">
                             <i class="icon-wallet"></i>
                             <h3>100% Secure</h3>
@@ -302,7 +343,14 @@
                             <img src="{{ url_for('static', filename='img/bg-img/about.png') }}" alt="">
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6" data-aos="fade-right" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="about-content mb-100">
                             <div class="section-heading">
                                 <h3>Let’s change <br><span>the world</span> together</h3>
@@ -324,10 +372,25 @@
         <!-- ##### About Area End ##### -->
 
         <!-- ##### Currency Area Start ##### -->
-        <section class="currency-calculator-area section-padding-100 bg-img bg-overlay" style="background-image: url(img/bg-img/bg-2.jpg);">
+        <section class="currency-calculator-area section-padding-100 bg-img bg-overlay" style="background-image: url(img/bg-img/bg-2.jpg);"
+            data-aos="fade-up" 
+            data-aos-offset="200"
+            data-aos-delay="30"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out"
+            data-aos-mirror="true"
+            data-aos-once="false"
+            data-aos-anchor-placement="top-center">
             <div class="container">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12" data-aos="fade-right" 
+                        data-aos-offset="200"
+                        data-aos-delay="30"
+                        data-aos-duration="1000"
+                        data-aos-easing="ease-in-out"
+                        data-aos-mirror="true"
+                        data-aos-once="false"
+                        data-aos-anchor-placement="top-center">
                         <div class="section-heading text-center white mx-auto">
                             <h3 class="mb-4">Cryptocurrency Calculator</h3>
                             <h5 class="mb-2">
@@ -342,7 +405,14 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="currency-calculator mb-15 clearfix">
+                        <div class="currency-calculator mb-15 clearfix" data-aos="fade-right" 
+                            data-aos-offset="200"
+                            data-aos-delay="30"
+                            data-aos-duration="1000"
+                            data-aos-easing="ease-in-out"
+                            data-aos-mirror="true"
+                            data-aos-once="false"
+                            data-aos-anchor-placement="top-center">
                             <form action="#" method="post" class="d-flex align-items-center justify-content-center">
                                 <!-- Calculator Part -->
                                 <div class="calculator-first-part d-flex align-items-center">
@@ -410,7 +480,14 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-12 col-lg-7">
-                        <div class="blog-area">
+                        <div class="blog-area" data-aos="fade-right" 
+                            data-aos-offset="200"
+                            data-aos-delay="30"
+                            data-aos-duration="1000"
+                            data-aos-easing="ease-in-out"
+                            data-aos-mirror="true"
+                            data-aos-once="false"
+                            data-aos-anchor-placement="top-center">
                             <!-- Single Blog Area -->
                             <div class="single-blog-area d-flex align-items-start">
                                 <!-- Thumbnail -->
@@ -469,7 +546,14 @@
                     </div>
 
                     <div class="col-12 col-lg-5">
-                        <div class="cryptos-prices-table">
+                        <div class="cryptos-prices-table" data-aos="fade-right" 
+                            data-aos-offset="200"
+                            data-aos-delay="30"
+                            data-aos-duration="1000"
+                            data-aos-easing="ease-in-out"
+                            data-aos-mirror="true"
+                            data-aos-once="false"
+                            data-aos-anchor-placement="top-center">
 
                             <!-- Single Price Table -->
                             <div class="single-price-table d-flex align-items-center justify-content-between">
@@ -600,7 +684,14 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <div class="newsletter-area mt-100">
+                        <div class="newsletter-area mt-100" data-aos="fade-up" 
+                            data-aos-offset="200"
+                            data-aos-delay="30"
+                            data-aos-duration="1000"
+                            data-aos-easing="ease-in-out"
+                            data-aos-mirror="true"
+                            data-aos-once="false"
+                            data-aos-anchor-placement="top-center">
                             <div class="section-heading text-center mx-auto">
                                 <h3>Subscribe to <span>Newsletter</span></h3>
                                 <h6>
@@ -621,7 +712,14 @@
         <!-- ##### Blog Area End ##### -->
 
         <!-- ##### Footer Area Start ##### -->
-        <footer class="footer-area">
+        <footer class="footer-area" data-aos="fade-up" 
+            data-aos-offset="200"
+            data-aos-delay="30"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out"
+            data-aos-mirror="true"
+            data-aos-once="false"
+            data-aos-anchor-placement="top-center">
             <!-- Main Footer Area -->
             <div class="main-footer-area section-padding-100-0 bg-img bg-overlay" style="background-image: url(img/bg-img/bg-1.jpg);">
                 <div class="container">
@@ -721,6 +819,12 @@
         <!-- ##### Footer Area Start ##### -->
 
         <!-- ##### All Javascript Script ##### -->
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
+
+
         <!-- jQuery-2.2.4 js -->
         <script src="{{ url_for('static', filename='js/jquery/jquery-2.2.4.min.js') }}"></script>
         <!-- Popper js -->
@@ -731,6 +835,7 @@
         <script src="{{ url_for('static', filename='js/plugins/plugins.js') }}"></script>
         <!-- Active js -->
         <script src="{{ url_for('static', filename='js/active.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/index.js') }}"></script>
         <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 
     {% endblock %}
