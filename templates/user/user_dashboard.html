@@ -981,22 +981,134 @@
                     
                             <!-- Table with fixed header and scrolling body -->
                             <div class="table-responsive">
+                                {% if referred_users %}
                                 <table class="table table-striped table-hover table-fixed">
                                     <thead class="thead primary-bg-color">
                                         
                                         <tr class="primary-bg-color">
                                             <th scope="col" class="l-bg-cherry text-light">#</th>
                                             <th scope="col" class="l-bg-cherry text-light">Username</th>
-                                            <th scope="col" class="l-bg-cherry text-light">Joined Date</th>
                                             <th scope="col" class="l-bg-cherry text-light">Reward</th>
+                                            <th scope="col" class="l-bg-cherry text-light">Joined Date</th>
                                             <th scope="col" class="l-bg-cherry text-light">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         
+                                            {% for user in referred_users %}
+                                                <tr>
+                                                    <th scope="row">{{ loop.index }}</th>
+                                                    <td>{{ user.username }}</td>
+                                                    <td>${{ user.amount_earned }}</td>
+                                                    <td>{{ user.date }}</td>
+                                                    <td>
+                                                        <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>You haven't referred anyone yet.</p>
                                         
+                                        <!-- <tr>
+                                            <th scope="row">{{ loop.index }}</th>
+                                            <td>Mark</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Jacob</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td><p class="bg-warning text-dark p-2 d-inline">Pending</p></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry the Bird</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>Martin</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>Sam</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td>John</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">7</th>
+                                            <td>David</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">8</th>
+                                            <td>Pedro</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">9</th>
+                                            <td>Sam</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">10</th>
+                                            <td>Jacob</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">11</th>
+                                            <td>Michael</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr> -->
                                     </tbody>
                                 </table>
+                                {% endif %}
                             </div><!-- End -->
                     
                         </div>
