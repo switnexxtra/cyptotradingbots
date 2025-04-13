@@ -290,15 +290,15 @@ def update_user(user_id):
                 flash(f'Invalid value for {field}.', 'danger')
 
     # Add user's total profit to each of their investments
+    # Update each investment's fields directly from the form
     for investment in user.investments:
-        investment.total_profit = user.total_profit  # Add user's profit to each investment's total profit
-        investment.estimated_profit = user.estimated_profit  # Add user's profit to each investment's total profit
-        investment.profit_per_day = user.profit_per_day  # Add user's profit to each investment's total profit
-        investment.profit_per_hour = user.profit_per_hour  # Add user's profit to each investment's total profit
-        investment.profit_per_min = user.profit_per_min  # Add user's profit to each investment's total profit
-        investment.profit_per_sec = user.profit_per_sec  # Add user's profit to each investment's total profit
-        investment.revenue_today = user.revenue_today  # Add user's profit to each investment's total profit
-        db.session.commit()  # Commit after updating each investment's total profit
+        for field in numeric_fields:
+            new_value = request.form.get(f'{field}_investment')  # Expects form input like profit_per_min_investment
+            if new_value:
+                try:
+                    setattr(investment, field, float(new_value))
+                except ValueError:
+                    pass  # Ignore invalid input
 
     db.session.commit()
     flash(f'User {user.username} updated successfully!', 'success')
