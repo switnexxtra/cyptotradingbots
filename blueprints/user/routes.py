@@ -557,7 +557,9 @@ def deposit():
     payment_method = request.form.get('payment_method')
     proof_image = request.files.get('proof_image')
 
-    print(f"Amount: {amount}, Payment Method: {payment_method}, Proof Image: {proof_image}")  # Debugging
+    if not proof_image or proof_image.filename.strip() == "":
+        flash("Proof of payment is required.", "danger")
+        return jsonify({"success": False, "message": "Proof image is required"}), 400
 
     if not amount or float(amount) <= 0 or not payment_method:
         flash("Invalid request. Please check your input.", "danger")
@@ -566,6 +568,9 @@ def deposit():
     filename = None
     if proof_image and allowed_file(proof_image.filename):
         filename = save_file(proof_image)
+    else:
+        flash("Invalid file type for proof image.", "danger")
+        return jsonify({"success": False, "message": "Invalid file type"}), 400
 
     try:
         # new_deposit = Deposit(
