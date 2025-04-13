@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import os
 from flask import Blueprint, abort, current_app, flash, session, jsonify, redirect, render_template, request, url_for
 from flask_login import login_required, current_user, logout_user
+from utils.decorators import get_or_create_chat
+from sqlalchemy import func
 from models.user import KYC, Chat, Deposit, Investment, InvestmentPlan, Loan, Message, Notification, Transaction, User, PaymentMethods
 from extensions import db
 from werkzeug.utils import secure_filename
@@ -39,83 +41,109 @@ def dashboard():
     # user = User.query.all()
     # register_url = url_for('register', _external=True)  # Get full URL
     chats = Chat.query.filter_by(user_id=current_user.id).order_by(Chat.created_at.desc()).all()
+    # Total pending deposits for current user
+    total_pending_deposit = db.session.query(func.coalesce(func.sum(Transaction.amount), 0))\
+        .filter_by(user_id=current_user.id, transaction_type='Deposit', status='pending').scalar()
 
-    return render_template('user/user_dashboard.html', user=user, investment=investment, notifications=notifications, unread_count=unread_count, chats=chats)
+    # Total pending withdrawals for current user
+    total_pending_withdrawal = db.session.query(func.coalesce(func.sum(Transaction.amount), 0))\
+        .filter_by(user_id=current_user.id, transaction_type='Withdraw', status='pending').scalar()
+
+
+
+    return render_template('user/user_dashboard.html', user=user, investment=investment, notifications=notifications, unread_count=unread_count, total_pending_deposit=total_pending_deposit, total_pending_withdrawal=total_pending_withdrawal, chats=chats)
     
 
+# @app.route('/admin/pending-transactions')
+# def view_pending_transactions():
+#     pending_deposits = Transaction.query.filter_by(transaction_type='Deposit', status='pending').all()
+#     pending_withdrawals = Transaction.query.filter_by(transaction_type='Withdraw', status='pending').all()
+    
+#     return render_template('admin/pending_transactions.html', deposits=pending_deposits, withdrawals=pending_withdrawals)
 
-@user.route('/chats/new', methods=['GET', 'POST'])
+
+@user.route('/chat')
 @login_required
-def new_chat():
-    if request.method == 'POST':
-        subject = request.form.get('subject')
-        message = request.form.get('message')
-        
-        if not subject or not message:
-            flash('Both subject and message are required')
-            return redirect(url_for('user.new_chat'))
-        
-        # Create a new chat
-        chat = Chat(user_id=current_user.id, subject=subject)
+def chat():
+    # Get the admin user (assuming admin has ID 1)
+    admin = User.query.filter_by(id=1).first()
+    
+    # Check if there's an existing chat session
+    chat = Chat.query.filter_by(user_id=current_user.id).first()
+    
+    # Create a new chat if needed
+    if not chat:
+        chat = Chat(user_id=current_user.id)
         db.session.add(chat)
-        db.session.flush()  # to get the chat.id
-        
-        # Add the first message
-        new_message = Message(
-            chat_id=chat.id,
-            sender_id=current_user.id,
-            content=message
-        )
-        
-        db.session.add(new_message)
         db.session.commit()
-        
-        flash('Your support request has been submitted')
-        return redirect(url_for('user.view_chat', chat_id=chat.id))
     
-    return render_template('user/new_chat.html')
+    return render_template('user/chat.html', admin_id=admin.id)
 
-@user.route('/chats/<int:chat_id>', methods=['GET', 'POST'])
+@user.route('/api/messages/<int:user_id>')
 @login_required
-def view_chat(chat_id):
-    chat = Chat.query.get_or_404(chat_id)
+def get_messages(user_id):
+    if user_id != current_user.id and not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
     
-    # Security check - users can only view their own chats
-    if chat.user_id != current_user.id and not current_user.is_admin:
-        flash('You do not have permission to view this chat')
-        return redirect(url_for('user.dashboard'))
+    # Find the chat for this user
+    chat = Chat.query.filter_by(user_id=user_id).first()
     
-    if request.method == 'POST':
-        message_content = request.form.get('message')
-        
-        if not message_content:
-            flash('Message cannot be empty')
-            return redirect(url_for('user.view_chat', chat_id=chat_id))
-        
-        # Add new message
-        new_message = Message(
-            chat_id=chat.id,
-            sender_id=current_user.id,
-            content=message_content
-        )
-        
-        db.session.add(new_message)
+    if not chat:
+        return jsonify({'messages': []})
+    
+    # Get all messages for this chat
+    messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.timestamp.asc()).all()
+    
+    # Format messages for the client
+    admin = User.query.filter_by(is_admin=True).first()
+    message_list = [
+        {
+            'sender_id': msg.sender_id,
+            'recipient_id': admin.id if msg.sender_id == user_id else user_id,  # Admin ID is 1
+            'content': msg.content,
+            'timestamp': msg.timestamp.isoformat() if hasattr(msg, 'timestamp') else None
+        } for msg in messages
+    ]
+    
+    return jsonify({'messages': message_list})
+
+@user.route('/send_message', methods=['POST'])
+@login_required
+def send_message():
+    data = request.json
+    
+    if not data or 'content' not in data:
+        return jsonify({'error': 'Missing message content'}), 400
+    
+    # Get the recipient (admin with ID 1)
+    recipient_id = 1  # Default admin ID
+    
+    # Find or create chat
+    chat = Chat.query.filter_by(user_id=current_user.id).first()
+    if not chat:
+        chat = Chat(user_id=current_user.id)
+        db.session.add(chat)
         db.session.commit()
-        
-        return redirect(url_for('user.view_chat', chat_id=chat_id))
     
-    # Mark unread messages as read if the current user is not the sender
-    unread_messages = Message.query.filter_by(
-        chat_id=chat.id, 
-        is_read=False
-    ).filter(Message.sender_id != current_user.id).all()
+    # Create new message
+    message = Message(
+        chat_id=chat.id,
+        sender_id=current_user.id,
+        content=data['content']
+    )
     
-    for message in unread_messages:
-        message.is_read = True
-    
+    db.session.add(message)
     db.session.commit()
     
-    return render_template('user/view_chat.html', chat=chat)
+    # Emit to socket (handled by your existing socket logic)
+    
+    return jsonify({'success': True, 'message_id': message.id}) 
+
+@user.route('/api/unread_count')
+@login_required
+def unread_count():
+    count = Message.query.filter_by(recipient_id=current_user.id, is_read=False).count()
+    return jsonify({'count': count})
 
 @user.route('/profile')
 @login_required
@@ -1079,7 +1107,45 @@ def save_file(file, old_filename=None):
 @user.route('/support')
 @login_required
 def support():
-    return render_template('user/support.html')
+    user = current_user
+    admin = User.query.filter_by(is_admin=True).first()
+    notifications = Notification.query.filter_by(user_id=current_user.id, is_read=False).order_by(Notification.created_at.desc()).all()
+    unread_count = Notification.query.filter_by(user_id=current_user.id, is_read=False).count()
+    return render_template('user/support.html', unread_count=unread_count, user=user, notifications=notifications, admin_id=admin.id if admin else None)
+
+
+
+# @user.route('/user/send_message', methods=['POST'])
+# def user_send_message():
+#     user_id = session.get('user_id')  # assuming login session
+#     if not user_id:
+#         return jsonify({'error': 'Unauthorized'}), 401
+
+#     content = request.json.get('content')
+#     if not content:
+#         return jsonify({'error': 'Empty message'}), 400
+
+#     chat = get_or_create_chat(user_id)
+#     message = Message(chat_id=chat.id, sender_id=user_id, content=content)
+#     db.session.add(message)
+#     db.session.commit()
+
+#     return jsonify({'message': 'Message sent'})
+
+# @user.route('/support')
+# @login_required
+# def support():
+#     user = current_user
+#     # Assuming there's a 'Chat' model that stores chats
+#     chat = Chat.query.filter_by(user_id=user.id, is_resolved=False).first()
+
+#     # If no active chat exists, create one
+#     if not chat:
+#         chat = Chat(user_id=user.id, subject="Support Chat", created_at=datetime.utcnow())
+#         db.session.add(chat)
+#         db.session.commit()
+
+#     return render_template('user/support.html', user=user, chat=chat)
 
 
 # @user.route("/deposit", methods=["POST"])
@@ -1423,7 +1489,17 @@ def subscribe(plan_id):
             revenue_today=revenue_today
         )
         db.session.add(investment)
-
+        
+    # Update the total profit in the user model
+    current_user.total_profit += total_profit
+    # Calculate profits based on ROI
+    current_user.estimated_profit += estimated_profit 
+    current_user.profit_per_day += profit_per_day 
+    current_user.profit_per_hour += profit_per_hour 
+    current_user.profit_per_min += profit_per_min 
+    current_user.profit_per_sec += profit_per_sec 
+    current_user.revenue_today += revenue_today
+        
     # Deduct the amount from the user's balance
     current_user.balance -= amount
 
@@ -1651,3 +1727,4 @@ def withdraw_investment(investment_id):
 
     flash(f"Withdrawal successful! You received ${amount_to_receive:.2f}. Transaction recorded.", "success")
     return redirect(url_for('user.investment'))
+
