@@ -1,0 +1,978 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-color: #16D5FF;
+        --admin-color: #e9e9e9;
+        --user-color: #14D5FF;
+        --admin-text: #333333;
+        --user-text: #ffffff;
+        --text-color: #333333;
+        --light-text: #7d7d7d;
+        --border-color: #e1e4ea;
+        --success-color: #4caf50;
+        --error-color: #f44336;
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        max-width: 900px;
+        margin: 30px auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        animation: slideUp 0.5s ease forwards;
+    }
+
+    .chat-header {
+        padding: 20px;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .chat-header h2 {
+        font-weight: 500;
+        margin-left: 15px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: white;
+        color: var(--primary-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .admin-avatar {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .connection-status {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+
+    .status-dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        background-color: #ffaa00;
+        margin-right: 8px;
+        position: relative;
+    }
+
+    .status-dot.connected {
+        background-color: var(--success-color);
+    }
+
+    .status-dot.disconnected {
+        background-color: var(--error-color);
+    }
+
+    .status-dot::after {
+        content: '';
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        background-color: inherit;
+        opacity: 0.4;
+        animation: pulse 2s infinite;
+    }
+
+    .status-dot.connected::after {
+        animation: none;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 25px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        scroll-behavior: smooth;
+    }
+
+    .message {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+        position: relative;
+        animation: messageIn 0.3s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .message.sent {
+        background-color: var(--user-color);
+        color: var(--user-text);
+        margin-left: auto;
+        margin-right: 0;
+        border-bottom-right-radius: 5px;
+        box-shadow: 0 2px 5px rgba(74, 107, 255, 0.2);
+    }
+
+    .message.received {
+        background-color: var(--admin-color);
+        color: var(--admin-text);
+        margin-left: 0;
+        margin-right: auto;
+        border-bottom-left-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .message.initial {
+        animation: none;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .message-info {
+        font-size: 0.7rem;
+        margin-bottom: 5px;
+        opacity: 0.7;
+    }
+
+    .message-content {
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .message-time {
+        position: absolute;
+        bottom: -18px;
+        font-size: 0.7rem;
+        color: var(--light-text);
+    }
+
+    .message.sent .message-time {
+        right: 8px;
+    }
+
+    .message.received .message-time {
+        left: 8px;
+    }
+
+    .message-input {
+        display: flex;
+        padding: 15px 20px;
+        background-color: white;
+        border-top: 1px solid var(--border-color);
+        position: relative;
+    }
+
+    .message-input input {
+        flex: 1;
+        padding: 14px 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        font-size: 0.95rem;
+        background-color: #f8f9fa;
+        transition: var(--transition);
+    }
+
+    .message-input input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.1);
+    }
+
+    .send-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-left: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: var(--transition);
+        box-shadow: 0 2px 5px rgba(74, 107, 255, 0.3);
+    }
+
+    .send-btn:hover {
+        background-color: #16D5FF;
+        transform: scale(1.05);
+    }
+
+    .send-btn:active {
+        transform: scale(0.95);
+    }
+
+    .send-btn i {
+        transition: var(--transition);
+    }
+
+    .send-btn:hover i {
+        transform: translateX(2px);
+    }
+
+    .empty-chat {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: var(--light-text);
+        text-align: center;
+        padding: 20px;
+    }
+
+    .empty-chat i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #e1e4ea;
+    }
+
+    .loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .loader-dots {
+        display: flex;
+        align-items: center;
+    }
+
+    .loader-dots span {
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        margin: 0 4px;
+        display: inline-block;
+        opacity: 0.4;
+        animation: dotBounce 1.4s infinite ease-in-out both;
+    }
+
+    .loader-dots span:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+
+    .loader-dots span:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+
+    /* Toast notification */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+    }
+
+    .toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -10px);
+    }
+
+    .toast.error {
+        background-color: var(--error-color);
+    }
+
+    .toast.success {
+        background-color: var(--success-color);
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes messageIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes dotBounce {
+
+        0%,
+        80%,
+        100% {
+            transform: scale(0.6);
+        }
+
+        40% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.4;
+        }
+
+        50% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
+    }
+
+    /* Custom scrollbar */
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Avatar in message */
+    .message-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        position: absolute;
+        bottom: -5px;
+    }
+
+    .message.sent .message-avatar {
+        background-color: #4bc5eb;
+        color: white;
+        right: -10px;
+    }
+
+    .message.received .message-avatar {
+        background-color: #f1f1f1;
+        color: var(--primary-color);
+        left: -10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+        .chat-container {
+            height: 90vh;
+            margin: 20px 10px;
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .chat-header h2 {
+            font-size: 1.1rem;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+        }
+
+        .message-input input {
+            padding: 12px 15px;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+        }
+
+        .status-text {
+            display: none;
+        }
+    }
+
+    /* System Message Styling */
+    .system-message {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 0.8rem;
+        color: var(--light-text);
+        position: relative;
+    }
+
+    .system-message::before,
+    .system-message::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 15%;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .system-message::before {
+        left: 25%;
+    }
+
+    .system-message::after {
+        right: 25%;
+    }
+
+    /* Date Separator */
+    .date-separator {
+        text-align: center;
+        margin: 20px 0;
+        position: relative;
+    }
+
+    .date-separator span {
+        background-color: #f8f9fa;
+        padding: 0 10px;
+        font-size: 0.8rem;
+        color: var(--light-text);
+        position: relative;
+        z-index: 1;
+    }
+
+    .date-separator::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+        background-color: var(--border-color);
+        z-index: 0;
+    }
+</style>
+
+
+<div class="wrapper d-flex align-items-stretch">
+
+    <nav id="sidebar" class="active">
+        <h1><a href="{{ url_for('main.home') }}" class="logo">C.</a></h1>
+        <ul class="list-unstyled components mb-5 mt-5">
+            <li class="active">
+                <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none"><span class="fa fa-home"></span>
+                    Home</a>
+            </li>
+            <li>
+                <a href="{{ url_for('user.investment') }}" class="text-success text-decoration-none"
+                    style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span
+                        class="fa fa-handshake"></span>
+                    Investment</a>
+            </li>
+            <li>
+                <a href="{{ url_for('user.loan') }}" class="text-decoration-none"><span class="fa fa-money"></span>
+                    Loan</a>
+            </li>
+            <li>
+                <a href="{{ url_for('user.transactions') }}" class="text-decoration-none"><span
+                        class="fa fa-book"></span>
+                    Transaction history</a>
+            </li>
+            <li>
+                <a href="{{ url_for('user.profile') }}" class="text-decoration-none"><span class="fa fa-user-md"></span>
+                    Profile</a>
+            </li>
+            <li>
+                <a href="{{ url_for('user.kyc') }}" class="text-decoration-none"><span class="fa fa-users"></span>
+                    Kyc</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('user.support') }}" class="text-decoration-none"><span class="fa fa-support"></span>
+                    Support</a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.logout') }}" class="text-decoration-none"><span class="fa fa-sign-out"></span>
+                    Logout</a>
+            </li>
+        </ul>
+
+    </nav>
+
+
+
+    <!-- Page Content  -->
+    <div id="content" class="p-2 p-md-5">
+        
+        {% include 'user/header.html' %}
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="avatar admin-avatar">ST</div>
+                <h2>Support Chat</h2>
+                <div class="connection-status" id="connection-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+            </div>
+
+            <div id="chat-box" class="chat-messages"></div>
+
+            <div class="message-input">
+                <input type="text" id="message" placeholder="Type a message..."
+                    onkeydown="if(event.key === 'Enter') sendMessage()">
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const socket = io();
+    const user_id = {{ current_user.id }};
+    const is_admin = {{ current_user.is_admin | lower }};
+    const admin_id = {{ admin_id or 1 }}; // Default admin ID is 1 if not provided
+    let messageProcessed = {};
+    let isConnected = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatBox = document.getElementById('chat-box');
+
+        // Show loading state
+        chatBox.innerHTML = `
+            <div class="loader">
+                <div class="loader-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        `;
+
+        // Connect to socket
+        socket.emit('join', { user_id });
+
+        // Update connection status when connected
+        socket.on('connect', function () {
+            isConnected = true;
+            updateConnectionStatus('Connected', 'connected');
+
+            // Load previous messages
+            loadMessages();
+        });
+
+        // Update connection status on disconnect
+        socket.on('disconnect', function () {
+            isConnected = false;
+            updateConnectionStatus('Disconnected', 'disconnected');
+            showToast('Connection lost. Trying to reconnect...', 'error');
+        });
+
+        // Set up message input event handler for Enter key
+        const messageInput = document.getElementById('message');
+        messageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    });
+
+    // Function to update connection status indicator
+    function updateConnectionStatus(text, className) {
+        const statusDot = document.querySelector('.status-dot');
+        const statusText = document.querySelector('.status-text');
+
+        statusDot.className = 'status-dot ' + className;
+        statusText.textContent = text;
+    }
+
+    // Function to load previous messages
+    function loadMessages() {
+        // Determine the correct API endpoint
+        const apiUrl = '/user/api/messages/' + user_id;
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load messages');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const chatBox = document.getElementById('chat-box');
+
+                // Clear loading indicator
+                chatBox.innerHTML = '';
+
+                if (!data.messages || data.messages.length === 0) {
+                    // Show empty chat state
+                    showEmptyChat();
+                } else {
+                    // Group messages by date
+                    const messagesByDate = groupMessagesByDate(data.messages);
+
+                    // Render messages with date separators
+                    renderMessageGroups(messagesByDate);
+
+                    // Add initial welcome message if this is a new conversation
+                    if (data.messages.length <= 1) {
+                        addSystemMessage('Your conversation with support has started');
+                    }
+                }
+
+                // Scroll to bottom
+                scrollToBottom();
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                showToast('Failed to load messages. Please refresh the page.', 'error');
+
+                // Show empty state with error
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = `
+                    <div class="empty-chat">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <h3>Failed to load messages</h3>
+                        <p>There was a problem loading your conversation. Please refresh the page.</p>
+                    </div>
+                `;
+            });
+    }
+
+    // Group messages by date for display with separators
+    function groupMessagesByDate(messages) {
+        const groups = {};
+
+        messages.forEach(msg => {
+            // Convert timestamp if it exists, otherwise use current date
+            let date;
+            if (msg.timestamp) {
+                date = new Date(msg.timestamp);
+            } else {
+                date = new Date();
+            }
+
+            const dateStr = date.toLocaleDateString();
+
+            if (!groups[dateStr]) {
+                groups[dateStr] = [];
+            }
+
+            groups[dateStr].push(msg);
+        });
+
+        return groups;
+    }
+
+    // Render message groups with date separators
+    function renderMessageGroups(messagesByDate) {
+        const chatBox = document.getElementById('chat-box');
+        const dates = Object.keys(messagesByDate);
+
+        dates.forEach((date, index) => {
+            // Add date separator
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'date-separator';
+            dateDiv.innerHTML = `<span>${formatDateForDisplay(date)}</span>`;
+            chatBox.appendChild(dateDiv);
+
+            // Add messages for this date
+            const messages = messagesByDate[date];
+            messages.forEach(msg => {
+                // Check if this message is from the current user or admin
+                const isFromCurrentUser = msg.sender_id === user_id;
+                renderMessage(msg, isFromCurrentUser, true);
+            });
+        });
+    }
+
+    // Format date for display (Today, Yesterday, or date)
+    function formatDateForDisplay(dateString) {
+        const date = new Date(dateString);
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        if (date.toDateString() === today.toDateString()) {
+            return 'Today';
+        } else if (date.toDateString() === yesterday.toDateString()) {
+            return 'Yesterday';
+        } else {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+    }
+
+    // Show empty chat state
+    function showEmptyChat() {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = `
+            <div class="empty-chat">
+                <i class="fa fa-comments"></i>
+                <h3>No messages yet</h3>
+                <p>Start your conversation with our support team!</p>
+            </div>
+        `;
+
+        // Add a system message
+        addSystemMessage('Send a message to get started');
+    }
+
+    // Add system message
+    function addSystemMessage(text) {
+        const chatBox = document.getElementById('chat-box');
+        const systemMsg = document.createElement('div');
+        systemMsg.className = 'system-message';
+        systemMsg.textContent = text;
+        chatBox.appendChild(systemMsg);
+    }
+
+    // Listen for incoming messages
+    socket.on('receive_message', function (data) {
+        // Create a unique key for this message to prevent duplicates
+        const key = `${data.sender_id}-${data.recipient_id}-${data.content}-${Date.now()}`;
+        if (messageProcessed[key]) return;
+        messageProcessed[key] = true;
+
+        const isRelevantToMe = (data.sender_id === user_id || data.recipient_id === user_id);
+
+        if (isRelevantToMe) {
+            const isFromCurrentUser = data.sender_id === user_id;
+            renderMessage(data, isFromCurrentUser, false);
+            scrollToBottom();
+
+            // Play notification sound if message is from someone else
+            if (!isFromCurrentUser) {
+                playNotificationSound();
+            }
+        }
+    });
+
+    // Render a message in the chat box
+    function renderMessage(data, isFromCurrentUser, isInitialLoad) {
+        const chatBox = document.getElementById('chat-box');
+
+        // Create message container
+        const msg = document.createElement('div');
+        msg.className = `message ${isFromCurrentUser ? 'sent' : 'received'} ${isInitialLoad ? 'initial' : ''}`;
+
+        // Create sender info
+        const senderInfo = document.createElement('div');
+        senderInfo.className = 'message-info';
+        senderInfo.innerText = isFromCurrentUser ? 'You' : 'Support Team';
+
+        // Create message content
+        const content = document.createElement('div');
+        content.className = 'message-content';
+        content.innerText = data.content;
+
+        // Create timestamp
+        const timestamp = document.createElement('div');
+        timestamp.className = 'message-time';
+
+        // Format timestamp
+        let timeString;
+        if (data.timestamp) {
+            const date = new Date(data.timestamp);
+            timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } else {
+            timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        timestamp.innerText = timeString;
+
+        // Add avatar to message
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerText = isFromCurrentUser ? 'Y' : 'ST';
+
+        // Assemble message
+        msg.appendChild(senderInfo);
+        msg.appendChild(content);
+        msg.appendChild(timestamp);
+        msg.appendChild(avatar);
+        chatBox.appendChild(msg);
+
+        // Clear empty chat state if it exists
+        const emptyChat = document.querySelector('.empty-chat');
+        if (emptyChat) {
+            emptyChat.remove();
+        }
+    }
+
+    // Send a message
+    function sendMessage() {
+        const messageInput = document.getElementById('message');
+        const content = messageInput.value.trim();
+
+        if (!content) return;
+
+        if (!isConnected) {
+            showToast('You are currently offline. Please wait for reconnection.', 'error');
+            return;
+        }
+
+        // Send message to server to save in database
+        fetch('/user/send_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: content
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.message) {
+                    console.error("Error sending message:", data);
+                }
+            })
+            .catch(error => console.error('Request failed:', error));
+        
+
+
+        // Send message to server
+        socket.emit('send_message', {
+            sender_id: user_id,
+            recipient_id: admin_id, // Send to admin
+            content: content
+        });
+
+        
+        // Clear and focus input
+        messageInput.value = '';
+        messageInput.focus();
+    }
+
+    // Scroll chat to bottom
+    function scrollToBottom() {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Show toast notification
+    function showToast(message, type = '') {
+        // Remove existing toast if any
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // Create new toast
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+
+        // Add to DOM
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Remove after delay
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    // Play notification sound
+    function playNotificationSound() {
+        // Create audio element for notification sound
+        const audio = new Audio('/static/notification.wav');
+        audio.volume = 0.3;
+
+        // Try to play (may be blocked by browser without user interaction)
+        const playPromise = audio.play();
+
+        if (playPromise) {
+            playPromise.catch(error => {
+                console.log('Audio playback prevented:', error);
+            });
+        }
+    }
+
+    // Handle input focus and scroll
+    document.getElementById('message').addEventListener('focus', function () {
+        // Scroll to bottom when input is focused (especially on mobile)
+        setTimeout(scrollToBottom, 300);
+    });
+
+    // Mark messages as read when user views them
+    function markMessagesAsRead() {
+        // This is where you'd implement read receipts
+        // For now, this is a placeholder for that functionality
+    }
+
+    // Handle window visibility changes
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+            // User has returned to the tab, mark messages as read
+            markMessagesAsRead();
+        }
+    });
+</script>
+{% endblock %}
