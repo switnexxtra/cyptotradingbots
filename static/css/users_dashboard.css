@@ -4933,6 +4933,14 @@ input[type="button"].btn-block {
     background-size: 100% 100%;
 }
 
+@media (max-width: 768px) {
+    #sidebar {
+        display: none;
+    }
+
+  
+}
+
 @media (max-width: 575.98px) {
 
     .navbar-expand-sm>.container,
@@ -12202,6 +12210,7 @@ h5,
     margin-right: 15px;
 }
 
+
 @media (max-width: 991.98px) {
     #sidebar ul li a span {
         display: block;
@@ -12225,8 +12234,105 @@ h5,
         margin-left: -80px !important;
     }
 
+
     #sidebar.active {
-        margin-left: 0 !important;
+        margin-left: 0 !important;      
+    }
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        display: none;
+    }
+
+    #sidebar.active {
+        display: block !important;
+    }
+
+    .funds__cards i {
+        font-size: 13px;
+        padding: 4px !important;
+    }
+
+    .Laptop__balances {
+        display: none;
+    }
+
+    .mobile__balances {
+        display: block;
+    }
+}
+
+.Laptop__balances {
+    display: block;
+}
+
+.mobile__balances {
+    display: none;
+}
+
+
+
+
+@media (max-width: 576px) {
+    .funds__cards {
+        font-size: 13px !important;
+        display: grid;
+        padding: 2px !important;
+        /* margin: 0 -2px !important; */
+        
+    }
+
+    .funds__row {
+        padding: 7px 20px !important;
+    }
+
+    /* .funds__cards-center {
+        margin-left: -2px !important;
+        margin-right: -2px !important;
+    } */
+
+    .funds__cards i {
+        font-size: 13px;
+        padding: 4px !important;
+    }
+
+    .Laptop__balances {
+        display: none;
+    }
+
+    .mobile__balances {
+        display: block;
+    }
+
+    .modern-carousel-controls .carousel-control-prev,
+    .modern-carousel-controls .carousel-control-next {
+        margin-top: 210px !important;
+        background-color: red;
+        width: 40px !important;
+    }
+
+    .mobile__balances .modern-carousel-controls {
+        text-align: center;
+        padding: 0 50px !important;
+    }
+
+    .mobile__balances .modern-carousel-controls .carousel-control-prev {
+        margin-left: 120px !important;
+    }
+
+    .mobile__balances .modern-carousel-controls .carousel-control-next {
+        margin-right: 120px !important;
+    }
+
+    .modern-carousel-controls .carousel-control-prev.active,
+    .modern-carousel-controls .carousel-control-next.active {
+        background-color: green;
+    }
+
+    .plan_body_card li p{
+        font-size: 13px !important;
+        line-height: 14px !important;
     }
 }
 
