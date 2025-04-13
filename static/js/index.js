@@ -1,22 +1,103 @@
+// (function($) {
+
+// 	"use strict";
+
+// 	var fullHeight = function() {
+
+// 		$('.js-fullheight').css('height', $(window).height());
+// 		$(window).resize(function(){
+// 			$('.js-fullheight').css('height', $(window).height());
+// 		});
+
+// 	};
+// 	fullHeight();
+
+// 	 $('#sidebarCollapse').on('click', function () {
+//         $('#sidebar').toggleClass('active');
+//     });
+
+// })(jQuery);
+
 (function($) {
-
-	"use strict";
-
-	var fullHeight = function() {
-
-		$('.js-fullheight').css('height', $(window).height());
-		$(window).resize(function(){
-			$('.js-fullheight').css('height', $(window).height());
-		});
-
-	};
-	fullHeight();
-
-	$('#sidebarCollapse').on('click', function () {
-      $('#sidebar').toggleClass('active');
-  });
-
+    "use strict";
+    var fullHeight = function() {
+        $('.js-fullheight').css('height', $(window).height());
+        $(window).resize(function(){
+            $('.js-fullheight').css('height', $(window).height());
+        });
+    };
+    $(function() {
+        fullHeight();
+        // On page load, check screen size
+        if ($(window).width() < 992) {
+            $('#sidebar').removeClass('active'); // For mobile - add active class (collapsed)
+        } else {
+            $('#sidebar').addClass('active'); // For desktop - remove active class (expanded)
+        }
+        // Toggle sidebar on button click
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
 })(jQuery);
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // This only hides the loader when basic DOM is loaded
+    setTimeout(function () {
+        const loader = document.getElementById('loading-overlay');
+        if (loader) {
+            loader.classList.add('loaded');
+        }
+    }, 300); // Small delay for smoother transition
+});
+
+window.addEventListener('load', function () {
+    // This ensures the loader is hidden when ALL resources are loaded
+    const loader = document.getElementById('loading-overlay');
+    if (loader) {
+        loader.classList.add('loaded');
+    }
+});
+
+
+// Start loader immediately — loader is already shown in HTML/CSS
+document.addEventListener('DOMContentLoaded', function () {
+    const loader = document.getElementById('loading-overlay');
+    const sidebar = document.getElementById('sidebar');
+    const navLinks = document.querySelectorAll('#sidebar .nav-link');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            // Prevent default navigation
+            e.preventDefault();
+
+            // Show loader immediately
+            if (loader) {
+                loader.classList.remove('loaded');
+            }
+
+            // Close sidebar
+            if (sidebar && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+
+            // Wait a bit so animation is visible, then go to the link
+            setTimeout(() => {
+                window.location.href = this.href;
+            }, 300);
+        });
+    });
+});
+
+// Hide loader after all content (images/scripts) loads
+window.addEventListener('load', function () {
+    const loader = document.getElementById('loading-overlay');
+    if (loader) {
+        loader.classList.add('loaded');
+    }
+});
+
 
 
 function copyToClipboard() {
@@ -305,45 +386,6 @@ function togglePaymentFields() {
 }
 
 
-// function openEditModal(payment) {
-//     document.getElementById('edit-payment-id').value = payment.id;
-//     document.getElementById('edit-method').value = payment.method;
-//     document.getElementById('edit-details').value = payment.details;
-//     document.getElementById('edit-account-number').value = payment.account_number;
-//     document.getElementById('edit-bank-name').value = payment.bank_name;
-//     document.getElementById('edit-account-name').value = payment.account_name;
-//     document.getElementById('edit-wallet-address').value = payment.wallet_address;
-//     document.getElementById('edit-memo').value = payment.memo;
-//     document.getElementById('edit-network-address').value = payment.network_address;
-    
-//     // Set the image preview
-//     let imagePreview = document.getElementById('edit-image-preview');
-//     if (payment.image_url) {
-//         imagePreview.src = payment.image_url;
-//         imagePreview.style.display = "block";
-//     } else {
-//         imagePreview.style.display = "none";
-//     }
-
-//     let editModal = new bootstrap.Modal(document.getElementById('editPaymentModal'));
-//     editModal.show();
-    
-// }
-
-// function previewNewImage(event) {
-//     let imagePreview = document.getElementById('edit-image-preview');
-//     let file = event.target.files[0];
-//     if (file) {
-//         let reader = new FileReader();
-//         reader.onload = function(e) {
-//             imagePreview.src = e.target.result;
-//             imagePreview.style.display = "block";
-//         };
-//         reader.readAsDataURL(file);
-//     }
-// }
-
-
 function openEditModal(payment) {
     console.log("Payment data received:", payment); // Debugging
 
@@ -431,3 +473,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+AOS.init({
+  duration: 1200,
+})
+
+
+
+
