@@ -1,10 +1,11 @@
-﻿alembic==1.14.1
-gunicorn
+alembic==1.14.1
 APScheduler==3.11.0
 bidict==0.23.1
 blinker==1.9.0
 click==8.1.8
 colorama==0.4.6
+dnspython==2.7.0
+eventlet==0.39.1
 Flask==3.1.0
 Flask-Login==0.6.3
 Flask-Mail==0.10.0
