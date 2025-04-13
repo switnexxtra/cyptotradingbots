@@ -19,13 +19,14 @@
 
     
 {% endblock %}
+
 {% block content %}
 
 
     <div class="wrapper d-flex align-items-stretch">
         
         <nav id="sidebar" class="active">
-            <h1><a href="{{ url_for('main.home') }}" class="logo">M.</a></h1>
+            <h1><a href="{{ url_for('main.home') }}" class="logo">C.</a></h1>
             <ul class="list-unstyled components mb-5 mt-5">
                 <li class="active">
                     <a href="{{ url_for('user.dashboard') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-home"></span> Home</a>
@@ -59,7 +60,7 @@
         
 
         <!-- Page Content  -->
-        <div id="content" class="p-4 p-md-5">
+        <div id="content" class="p-1 p-md-5">
 
             <!-- <div class="profile-container d-flex justify-content-between align-items-center">
                 <div class="text-center">
@@ -123,7 +124,7 @@
                     </div>
 
                     <!-- Withdraw Button -->
-                    <div class="funds__cards bg-primary">
+                    <div class="funds__cards bg-primary funds__cards-center">
                         <a href="" class="text-light" data-bs-toggle="modal" data-bs-target="#withdrawModal">
                             <i class="fa fa-money-bill-wave p-2 d-block"></i> Withdraw
                         </a>
@@ -138,74 +139,7 @@
                 </div>
             </div>
             
-            <!-- Add Funds Modal
-            <div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addFundsModalLabel">Add Funds</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form {{ url_for('user.investment')}}action="" method="Post">
-                                <label for="amount">Enter Amount:</label>
-                                <input type="number" id="amount" class="form-control" placeholder="Enter amount">
             
-                                <label for="payment-method">Select Payment Method:</label>
-                                <select id="payment-method" class="form-control">
-                                    <option value="">-- Select --</option>
-                                    <option value="paypal">PayPal Transfer</option>
-                                    <option value="google_pay">Google Pay</option>
-                                    <option value="bitcoin">Bitcoin</option>
-                                    <option value="western_union">Western Union</option>
-                                    <option value="transfer_wise">Transfer Wise</option>
-                                    <option value="bank_transfer">Bank Transfer</option>
-                                    <option value="skrill">Skrill Transfer</option>
-                                    <option value="payoneer">Payoneer</option>
-                                </select>
-            
-                                <br>
-            
-                                <!-- Payment Details (Initially Hidden) 
-                                <div id="payment-details"
-                                    style="display: none; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-                                    <h6>Payment Details:</h6>
-                                    <p id="payment-info"></p>
-            
-                                    <!-- Bitcoin Extra Details (Hidden by Default) 
-                                    <div id="bitcoin-details" style="display: none;">
-                                        <p class="lh-2"><strong class="lh-2">Wallet Address:<br></strong> <span
-                                                id="btc-wallet">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span></p>
-                                        <p class="lh2"><strong class="lh-2">Memo: <br> </strong> <span
-                                                id="btc-memo">12345-ABC</span></p>
-                                        <img src="https://www.bitcoinqrcodemaker.com/api/?style=bitcoin&address=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
-                                            alt="Bitcoin QR Code" width="150">
-                                    </div>
-                                </div>
-            
-                                <p id="modal-note" class="text-success modal-note" style="display: none;">Send the amount you want
-                                    to be funded into
-                                    your account to the detials provided above, upload a screenshot as prove of payment and click on
-                                    proceed to confirm
-                                    your details and your payment will be Credited with the deposit amount
-                                </p>
-                                <div class="text-center pb-4" id="proceed-container">
-                                    <button type="button" class="btn l-bg-green-dark text-white"
-                                        id="proceed-button">Proceed</button>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn l-bg-green-dark text-white" id="confirm-button"
-                                        style="display: none;">Confirm</button>
-                                </div>
-                            </form>
-            
-                        </div>
-                    </div>
-                </div>
-            </div> -->
 
             <!-- Add Funds Modal -->
             <div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true">
@@ -283,77 +217,7 @@
                 </div>
             </div> 
 
-            <!-- <div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addFundsModalLabel">Add Funds</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="deposit-form" action="{{ url_for('user.deposit') }}" method="POST"
-                                enctype="multipart/form-data">
-                                <label for="amount">Enter Amount:</label>
-                                <input type="number" id="amount" name="amount" class="form-control" placeholder="Enter amount"
-                                    required>
             
-                                <label for="payment-method">Select Payment Method:</label>
-                                <select id="payment-method" name="payment_method" class="form-control" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="paypal">PayPal Transfer</option>
-                                    <option value="google_pay">Google Pay</option>
-                                    <option value="bitcoin">Bitcoin</option>
-                                    <option value="western_union">Western Union</option>
-                                    <option value="transfer_wise">Transfer Wise</option>
-                                    <option value="bank_transfer">Bank Transfer</option>
-                                    <option value="skrill">Skrill Transfer</option>
-                                    <option value="payoneer">Payoneer</option>
-                                </select>
-                                <br>
-                                <!-- Payment Details (Initially Hidden) 
-                                <div id="payment-details"
-                                    style="display: none; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-                                    <h6>Payment Details:</h6>
-                                    <p id="payment-info"></p>
-                                    <div id="loading" class="text-center" style="display: none;">
-                                        <div class="spinner-border" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container modal-note" id="modal-note" style="display: none;">
-                                    <div class="alert alert-warning text-center p-3" role="alert">
-                                        <p class="text-success">Send the amount you want to be funded into your account to the
-                                            details provided above, upload a screenshot as proof of payment and click on 'Confirm'
-                                            button to confirm your payment and your account will be credited with the deposited
-                                            amount once confirmed.</p>
-                                    </div>
-                                    <div class="alert alert-danger text-center p-3" role="alert">
-                                        <p>Please note that proceeding without making payments may lead to account suspension or
-                                            permanent closure.</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="proof_image">Upload Proof of Payment:</label>
-                                    <input type="file" id="proof_image" name="proof_image" class="form-control-file"
-                                        accept="image/*" required>
-                                </div>
-                                <div class="text-center pb-4" id="proceed-container">
-                                    <button type="button" class="btn l-bg-green-dark text-white"
-                                        id="proceed-button">Proceed</button>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn l-bg-green-dark text-white" id="confirm-button"
-                                        style="display: none;">Confirm</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
 
             <div id="loading" class="text-center" style="display: none;">
                 <div class="spinner-border" role="status">
@@ -361,42 +225,6 @@
                 </div>
             </div>
 
-
-            <!-- Withdraw Modal
-            <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="withdrawModalLabel">BTC Withdrawal Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label for="btcWallet" class="form-label">BTC Wallet Address</label>
-                                    <input type="text" class="form-control" id="btcWallet">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="memo" class="form-label">Memo</label>
-                                    <input type="text" class="form-control" id="memo">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="withdrawAmount" class="form-label">Amount</label>
-                                    <input type="text" class="form-control" id="withdrawAmount">
-                                </div>
-                                <div class="mb-3 text-center">
-                                    <img id="qrCode" src="" alt="QR Code" class="img-fluid"
-                                        style="max-width: 150px; display: none;">
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn l-bg-blue-dark">Proceed</button>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
 
             <!-- Withdraw Modal -->
             <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
@@ -511,9 +339,9 @@
             </div>
             
 
-            <!-- Balance cards  -->
-            <div class="container mt-4">
-                <div id="statsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Balance cards  For Larger Devices-->
+            <div class="container mt-4 Laptop__balances">
+                <div id="statsCarousel" class="carousel slide " data-bs-ride="carousel">
                     <!-- Indicators -->
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="#statsCarousel" data-bs-slide-to="0" class="active"
@@ -560,7 +388,9 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:,}".format(user.total_profit | default(0)) }}
+                                                        ${{ "{:,}".format(investment.total_profit | default(0)) }}
+
+
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -585,7 +415,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:,}".format(user.estimated_profit | default(0)) }}
+                                                        ${{ "{:,}".format(investment.estimated_profit | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -615,7 +445,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(user.profit_per_day | default(0)) }}
+                                                        ${{ "{:.9f}".format(investment.profit_per_day | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -642,7 +472,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(user.profit_per_hour | default(0)) }}
+                                                        ${{ "{:.9f}".format(investment.profit_per_hour | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -668,7 +498,7 @@
                                             <div class="row align-items-center mb-2 d-flex">
                                                 <div class="col-8">
                                                     <h2 class="d-flex align-items-center mb-0">
-                                                        ${{ "{:.9f}".format(user.profit_per_min | default(0)) }}
+                                                        ${{ "{:.9f}".format(investment.profit_per_min | default(0)) }}
                                                     </h2>
                                                 </div>
                                                 <div class="col-4 text-right">
@@ -760,9 +590,296 @@
             
 
 
+            <div class="container mt-4 mobile__balances">
+                <div id="statsCarousel2" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                    <!-- Indicators -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="0" class="active"
+                            aria-current="true" aria-label="Total Investment"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="1"
+                            aria-label="Total Profit"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="2"
+                            aria-label="Estimated Profit"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="3"
+                            aria-label="Profit Per Day"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="4"
+                            aria-label="Profit Per Hour"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="5"
+                            aria-label="Profit Per Min"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="6"
+                            aria-label="Profit Per Sec"></button>
+                        <button type="button" data-bs-target="#statsCarousel2" data-bs-slide-to="7"
+                            aria-label="Revenue Today"></button>
+                    </div>
+            
+                    <div class="carousel-inner pb-3">
+                        <!-- Card 1: Total Investment -->
+                        <div class="carousel-item active">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-cherry">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-arrow-trend-up"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Total Investment</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,}".format(user.total_investment | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>12.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 2: Total Profit -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-purple">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-sack-dollar"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Total Profit</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,}".format(investment.total_profit | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>12.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 3: Estimated Profit -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-blue-dark">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Estimated Profit</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,}".format(investment.estimated_profit | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>9.23% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-green" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 4: Profit Per Day(PPD) -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-green-dark">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Profit Per Day(PPD)</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,.6f}".format(investment.profit_per_day | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>10% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-orange" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 5: Profit Per Hour(PPH) -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-orange-dark">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-coins"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Profit Per Hour(PPH)</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,.6f}".format(investment.profit_per_hour | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 6: Profit Per Mins(PPM) -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-pink">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Profit Per Mins(PPM)</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,.6f}".format(investment.profit_per_min | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 7: Profit Per Sec(PPS) -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-blue">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-coins"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Profit Per Sec(PPS)</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,.6f}".format(investment.profit_per_sec | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Card 8: Revenue Today -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card l-bg-teal">
+                                        <div class="card-statistic-3 p-4">
+                                            <div class="card-icon card-icon-large"><i class="fas fa-coins"></i></div>
+                                            <div class="mb-4">
+                                                <h5 class="card-title mb-0">Revenue Today</h5>
+                                            </div>
+                                            <div class="row align-items-center mb-2 d-flex">
+                                                <div class="col-8">
+                                                    <h2 class="d-flex align-items-center mb-0">
+                                                        ${{ "{:,.6f}".format(investment.revenue_today | default(0)) }}
+                                                    </h2>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                                                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%"
+                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Carousel Controls -->
+                    <div class="modern-carousel-controls mt-3">
+                        <button class="carousel-control-prev btn-outline-primary rounded-pill px-3 py-2 shadow-sm ml-4" type="button" data-bs-target="#statsCarousel2" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next btn-outline-primary rounded-pill px-3 py-2 shadow-sm" type="button" data-bs-target="#statsCarousel2" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
             <!-- Plan Cards and others -->
-            <div class="container">
-                <div class="plans_and_others_container">
+            <div class="container mt-3 pt-3">
+                <div class="plans_and_others_container mt-3">
                     <div class="row mt-3 mb-3">
                         <div class="col-md-3 mb-2 ">
                             <div class="plans_and_others_card small-card pt-2 pr-2 pl-2 pb-0">
@@ -793,7 +910,7 @@
                                 <p class="plan_card_icons"><i class="fa fa-arrow-down l-bg-teal p-2"></i></p>
                                 <p class="card_subheader p-0">Pending Desposit</p>
                                 <div class="d-flex justify-content-between pb-2">
-                                    <h4 class="card_header p-0">$0.0</h4>
+                                    <h4 class="card_header p-0">$ {{ "{:,.2f}".format(total_pending_deposit) }}</h4>
                                     <p class="plan_card_icons"><i class="fa fa-arrow-right"></i></p>
                                 </div>
                             </div>
@@ -805,7 +922,7 @@
                                 <p class="plan_card_icons"><i class="fa fa-credit-card l-bg-blue p-2"></i></p>
                                 <p class="card_subheader p-0">Pending Withdrawal</p>
                                 <div class="d-flex justify-content-between pb-2">
-                                    <h4 class="card_header p-0">$0.0</h4>
+                                    <h4 class="card_header p-0">${{ "{:,.2f}".format(total_pending_withdrawal) }}</h4>
                                     <p class="plan_card_icons"><i class="fa fa-arrow-right"></i></p>
                                 </div>
                             </div>
@@ -838,11 +955,23 @@
                 <p class="refferal_text mt-3">
                     Your Refferal Link
                 </p>
+                <!-- Referral Code Section -->
                 <div class="refferal_card d-flex">
-                    <input type="text" id="copyText" class="form-control" value="{{ user.referral_code }}" readonly>
-                    <button class="copy-btn" onclick="copyToClipboard()">
+                    <input type="text" id="copyReffLink" class="form-control" value="{{ user.referral_code }}" readonly>
+                    <button class="copy-btn btn btn-outline-secondary ms-2" onclick="copyReffLink()">
                         <i class="fa fa-copy"></i>
                     </button>
+                </div>
+                
+                <!-- Toast Message -->
+                <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+                    <div id="copyReff" class="toast align-items-center text-white bg-success border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Copied to clipboard!
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 
@@ -865,7 +994,103 @@
                                     </thead>
                                     <tbody>
                                         
-                                        
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Jacob</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td><p class="bg-warning text-dark p-2 d-inline">Pending</p></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry the Bird</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>Martin</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>Sam</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td>John</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">7</th>
+                                            <td>David</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">8</th>
+                                            <td>Pedro</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">9</th>
+                                            <td>Sam</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">10</th>
+                                            <td>Jacob</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-warning text-dark p-2 d-inline">Pending</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">11</th>
+                                            <td>Michael</td>
+                                            <td>02-05-2025</td>
+                                            <td>$45</td>
+                                            <td>
+                                                <p class="bg-success text-white p-2 d-inline">Completed</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div><!-- End -->
@@ -969,6 +1194,40 @@
         
         <!-- Bootstrap JS (for modal) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.getElementById('sidebarToggle').addEventListener('click', function () {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+        </script>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Initialize the carousel with specific options
+                var carousel = new bootstrap.Carousel(document.getElementById('statsCarousel'), {
+                    interval: 5000,  // Time between automatic cycling (5 seconds)
+                    wrap: true,      // Whether the carousel should cycle continuously
+                    keyboard: true,  // Whether the carousel should react to keyboard events
+                    pause: 'hover'   // Pauses the cycling on mouseenter
+                });
+
+                // Optional: Add event listeners to ensure proper behavior
+                document.getElementById('statsCarousel').addEventListener('slid.bs.carousel', function (event) {
+                    // This event fires when the carousel has completed its slide transition
+                    console.log('Slide changed to index: ' + event.to);
+                });
+            });
+        </script>
+
+        <script>
+            function copyReffLink() {
+                const copyText = document.getElementById("copyReffLink");
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); // For mobile
+                navigator.clipboard.writeText(copyText.value).then(() => {
+                    const toast = new bootstrap.Toast(document.getElementById('copyReff'));
+                    toast.show();
+                });
+            }
+        </script>
     {% endblock %}
    
