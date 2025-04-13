@@ -4,7 +4,7 @@ from flask import Blueprint, abort, current_app, flash, session, jsonify, redire
 from flask_login import login_required, current_user, logout_user
 from utils.decorators import get_or_create_chat
 from sqlalchemy import func
-from models.user import KYC, Chat, Deposit, Investment, InvestmentPlan, Loan, Message, Notification, Transaction, User, PaymentMethods
+from models.user import KYC, Chat, Deposit, Investment, InvestmentPlan, Loan, Message, Notification, Referral, Transaction, User, PaymentMethods
 from extensions import db
 from werkzeug.utils import secure_filename
 
@@ -20,14 +20,22 @@ def dashboard():
     user = current_user  # Get the logged-in user
     if user is None: # handle the case where somehow current_user is None
         return redirect(url_for('login')) # Redirect to login page
-    # investment = Investment.query.filter_by(user_id=current_user.id).first()
-    # print(investment.profit_per_day, investment.profit_per_hour, investment.profit_per_min)
+    
+    # Get all referrals made by the current user
+    referrals = Referral.query.filter_by(referrer_id=current_user.user_id).all()
 
-    # profit_per_day=round(user.profit_per_day if user.profit_per_day else 0, 6)
-    # profit_per_hour=round(user.profit_per_hour if user.profit_per_hour else 0, 6)
-    # profit_per_min=round(user.profit_per_min if user.profit_per_min else 0, 6)
-    # estimated_profit=round(user.estimated_profit if user.estimated_profit else 0, 6)
-    # total_profit=round(user.total_profit if user.total_profit else 0, 6)
+    # Fetch details of referred users + amount earned
+    referred_users = []
+    for referral in referrals:
+        user = User.query.filter_by(user_id=referral.referred_id).first()
+        if user:
+            referred_users.append({
+                'username': user.username,
+                'email': user.email,
+                'date': user.created_at.strftime('%Y-%m-%d'),
+                'amount_earned': referral.amount_earned
+            })
+
         
     # Get the active investment of the logged-in user
     investment = Investment.query.filter_by(user_id=current_user.id, status='active').first()
@@ -51,7 +59,7 @@ def dashboard():
 
 
 
-    return render_template('user/user_dashboard.html', user=user, investment=investment, notifications=notifications, unread_count=unread_count, total_pending_deposit=total_pending_deposit, total_pending_withdrawal=total_pending_withdrawal, chats=chats)
+    return render_template('user/user_dashboard.html', user=user, investment=investment, notifications=notifications, unread_count=unread_count, total_pending_deposit=total_pending_deposit, total_pending_withdrawal=total_pending_withdrawal, chats=chats, referred_users=referred_users)
     
 
 # @app.route('/admin/pending-transactions')
