@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta
 import os
-from flask import Blueprint, current_app, jsonify, session, render_template, redirect, flash, url_for, request
+from flask import Blueprint, abort, current_app, jsonify, session, render_template, redirect, flash, url_for, request
 from flask_login import login_required, current_user
-from utils.decorators import admin_required
-from models.user import KYC, Chat, Deposit, InvestmentPlan, Loan, Message, Notification, Transaction, User, PaymentMethods, Settings
+from utils.decorators import admin_required, get_or_create_chat
+from models.user import KYC, Chat, Deposit, Investment, InvestmentPlan, Loan, Message, Notification, Transaction, User, PaymentMethods, Settings
 from extensions import db
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 
 
 admin = Blueprint('admin', __name__)
@@ -23,31 +24,49 @@ def dashboard():
 
     users_with_kyc = User.query.join(KYC).filter(KYC.status != 'pending').all()
     
-    # Get all chats ordered by most recent activity
-    chats = Chat.query.join(
-        Message, Chat.id == Message.chat_id
-    ).group_by(
-        Chat.id
-    ).order_by(
-        db.func.max(Message.timestamp).desc()
-    ).all()
-    
-    # Count unread messages for each chat
-    chat_data = []
-    for chat in chats:
-        unread_count = Message.query.filter_by(
-            chat_id=chat.id, 
-            is_read=False
-        ).filter(Message.sender_id != current_user.id).count()
-        
-        chat_data.append({
-            'chat': chat,
-            'unread_count': unread_count
-        })
-    
-    
+    # $ Total Invests
+    total_invests = db.session.query(func.sum(Investment.amount)).scalar() or 0.0
 
-    return render_template('admin/admin_dashboard.html', user=current_user, payment_methods=payment_methods, user_kyc=users_with_kyc, transactions=transactions, chat_data=chat_data)
+    # $ Total Pending Deposit
+    total_pending_deposit = db.session.query(func.sum(Deposit.amount)).filter(Deposit.status == "Pending").scalar() or 0.0
+
+    # $ Total Transactions
+    total_transactions = db.session.query(func.sum(Transaction.amount)).filter(Transaction.status == "approved").scalar() or 0.0
+
+    # $ Total Withdrawals
+    total_withdrawals = db.session.query(func.sum(Transaction.amount)).filter(
+        Transaction.transaction_type == 'Withdraw',
+        Transaction.status == 'approved'
+    ).scalar() or 0.0
+
+    # $ Pending Withdrawals
+    pending_withdrawals = db.session.query(func.sum(Transaction.amount)).filter(
+        Transaction.transaction_type == 'Withdraw',
+        Transaction.status == 'pending'
+    ).scalar() or 0.0
+    
+    # Total Users
+    total_users = db.session.query(User).count()
+
+    # Active Users
+    active_users = db.session.query(User).filter(User.status == 'active').count()
+
+    # Deactivated Users
+    deactivated_users = db.session.query(User).filter(User.status != 'active').count()
+
+    dashboard_stats = {
+        "total_invests": round(total_invests, 6),
+        "pending_deposit": round(total_pending_deposit, 6),
+        "total_transactions": round(total_transactions, 6),
+        "total_withdrawals": round(total_withdrawals, 6),
+        "pending_withdrawals": round(pending_withdrawals, 6),
+        "total_users": total_users,
+        "active_users": active_users,
+        "deactivated_users": deactivated_users
+    }
+
+
+    return render_template('admin/admin_dashboard.html', user=current_user, payment_methods=payment_methods, user_kyc=users_with_kyc, transactions=transactions, data=dashboard_stats)
 
 
 # Admin required decorator
@@ -109,6 +128,8 @@ def user_list():
 @admin_required
 def users():
     users = User.query.all()
+    # Fetch investments for all users (or specific users if needed)
+    
     return render_template('admin/users.html', user=current_user, users=users)
 
 @admin.route('/search_users', methods=['GET'])
@@ -158,6 +179,81 @@ def search_transactions():
     return html_content
 
 
+# @admin.route('/update_user/<int:user_id>', methods=['POST'])
+# @login_required
+# @admin_required
+# def update_user(user_id):
+#     user = User.query.get_or_404(user_id)
+#     User.query.filter(User.pending_bonus.is_(None)).update({User.pending_bonus: 0.0})
+#     db.session.commit()
+
+#     user.fullname = request.form['fullname']
+#     user.username = request.form['username']
+#     user.email = request.form['email']
+#     user.mobile = request.form['mobile']
+#     user.dateofbirth = request.form['dateofbirth']
+#     user.gender = request.form['gender']
+#     user.status = request.form['status']
+
+#     # Handle pending bonus addition
+#     new_bonus = request.form.get('bonus', type=float)
+#     if new_bonus and new_bonus > 0:
+#         user.pending_bonus += new_bonus
+#         notification = Notification(user_id=user.id, message=f'You received a bonus of ${new_bonus}. Claim it now!')
+#         db.session.add(notification)
+#         flash(f'Bonus of ${new_bonus} added to pending bonus for {user.username}', 'success')
+
+#     # Handle balance update
+#     # new_balance = request.form.get('balance', type=float)
+#     # total_profit = request.form.get('total_profit', type=float)
+#     # estimated_profit = request.form.get('estimated_profit', type=float)
+#     # profit_per_day = request.form.get('profit_per_day', type=float)
+#     # profit_per_hour = request.form.get('profit_per_hour', type=float)
+#     # profit_per_min = request.form.get('profit_per_min', type=float)
+#     # profit_per_sec = request.form.get('profit_per_sec', type=float)
+#     # if new_balance is not None:
+#     #     user.balance = new_balance
+        
+        
+#     # if total_profit is not None:
+#     #     user.total_profit = total_profit
+            
+#     # if estimated_profit is not None:
+#     #     user.estimated_profit = estimated_profit
+            
+#     # if profit_per_day is not None:
+#     #     user.profit_per_day = profit_per_day
+            
+#     # if profit_per_hour is not None:
+#     #     user.profit_per_hour = profit_per_hour
+            
+#     # if profit_per_min is not None:
+#     #     user.profit_per_min = profit_per_min
+            
+#     # if profit_per_sec is not None:
+#     #     user.profit_per_sec = profit_per_sec
+        
+#     # flash(f'User balance updated ', 'success')
+
+#     # db.session.commit()
+    
+#     # Handle balance update
+#     numeric_fields = ['balance', 'total_profit', 'estimated_profit', 'profit_per_day', 'profit_per_hour', 'profit_per_min', 'profit_per_sec', 'revenue_today']
+#     for field in numeric_fields:
+#         new_value = request.form.get(field)
+#         if new_value:
+#             try:
+#                 setattr(user, field, float(new_value))  # Convert and assign
+#             except ValueError:
+#                 flash(f'Invalid value for {field}.', 'danger')
+    
+   
+
+#     db.session.commit()
+#     flash(f'User {user.username} updated successfully!', 'success')
+#     return redirect(url_for('admin.users'))
+
+
 @admin.route('/update_user/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
@@ -166,6 +262,7 @@ def update_user(user_id):
     User.query.filter(User.pending_bonus.is_(None)).update({User.pending_bonus: 0.0})
     db.session.commit()
 
+    # Update user details
     user.fullname = request.form['fullname']
     user.username = request.form['username']
     user.email = request.form['email']
@@ -182,42 +279,8 @@ def update_user(user_id):
         db.session.add(notification)
         flash(f'Bonus of ${new_bonus} added to pending bonus for {user.username}', 'success')
 
-    # Handle balance update
-    # new_balance = request.form.get('balance', type=float)
-    # total_profit = request.form.get('total_profit', type=float)
-    # estimated_profit = request.form.get('estimated_profit', type=float)
-    # profit_per_day = request.form.get('profit_per_day', type=float)
-    # profit_per_hour = request.form.get('profit_per_hour', type=float)
-    # profit_per_min = request.form.get('profit_per_min', type=float)
-    # profit_per_sec = request.form.get('profit_per_sec', type=float)
-    # if new_balance is not None:
-    #     user.balance = new_balance
-        
-        
-    # if total_profit is not None:
-    #     user.total_profit = total_profit
-            
-    # if estimated_profit is not None:
-    #     user.estimated_profit = estimated_profit
-            
-    # if profit_per_day is not None:
-    #     user.profit_per_day = profit_per_day
-            
-    # if profit_per_hour is not None:
-    #     user.profit_per_hour = profit_per_hour
-            
-    # if profit_per_min is not None:
-    #     user.profit_per_min = profit_per_min
-            
-    # if profit_per_sec is not None:
-    #     user.profit_per_sec = profit_per_sec
-        
-    # flash(f'User balance updated ', 'success')
-
-    # db.session.commit()
-    
-    # Handle balance update
-    numeric_fields = ['balance', 'total_profit', 'estimated_profit', 'profit_per_day', 'profit_per_hour', 'profit_per_min', 'profit_per_sec']
+    # Handle balance and profits update
+    numeric_fields = ['balance', 'total_profit', 'estimated_profit', 'profit_per_day', 'profit_per_hour', 'profit_per_min', 'profit_per_sec', 'revenue_today']
     for field in numeric_fields:
         new_value = request.form.get(field)
         if new_value:
@@ -226,9 +289,21 @@ def update_user(user_id):
             except ValueError:
                 flash(f'Invalid value for {field}.', 'danger')
 
+    # Add user's total profit to each of their investments
+    for investment in user.investments:
+        investment.total_profit = user.total_profit  # Add user's profit to each investment's total profit
+        investment.estimated_profit = user.estimated_profit  # Add user's profit to each investment's total profit
+        investment.profit_per_day = user.profit_per_day  # Add user's profit to each investment's total profit
+        investment.profit_per_hour = user.profit_per_hour  # Add user's profit to each investment's total profit
+        investment.profit_per_min = user.profit_per_min  # Add user's profit to each investment's total profit
+        investment.profit_per_sec = user.profit_per_sec  # Add user's profit to each investment's total profit
+        investment.revenue_today = user.revenue_today  # Add user's profit to each investment's total profit
+        db.session.commit()  # Commit after updating each investment's total profit
+
     db.session.commit()
     flash(f'User {user.username} updated successfully!', 'success')
     return redirect(url_for('admin.users'))
+
 
 
 @admin.route('/send_notification', methods=['POST'])
@@ -683,7 +758,186 @@ def update_kyc_status(kyc_id):
 
 
 # <----------------------------------- End Of Kyc Section <------------------------------- #
-@admin.route('/support')
+# @admin.route('/support')
+# # @login_required
+# def support():
+#     return render_template('admin/support.html')
+
+
+@admin.route('/chat')
+@login_required
+def chat():
+    if current_user.is_admin:
+        # Get list of users who have messages for admin
+        users_with_messages = db.session.query(User).join(
+            Message, Message.sender_id == User.id
+        ).filter(
+            Message.recipient_id == current_user.id
+        ).group_by(User.id).all()
+        
+        # Also get all users for admin to initiate chats
+        all_users = User.query.filter(User.id != current_user.id).all()
+        
+        return render_template('admin/support.html', users=all_users, users_with_messages=users_with_messages)
+    else:
+        # For regular users, get their conversation with admin
+        admin = User.query.filter_by(is_admin=True).first()
+        messages = Message.query.filter(
+            ((Message.sender_id == current_user.id) & (Message.recipient_id == admin.id)) |
+            ((Message.sender_id == admin.id) & (Message.recipient_id == current_user.id))
+        ).order_by(Message.timestamp).all()
+        
+        return render_template('user/support.html', messages=messages, admin=admin)
+    
+    
+
+# @admin.route('/api/messages/<int:user_id>')
 # @login_required
+# def get_messages(user_id):
+#     if not current_user.is_admin and user_id != current_user.id:
+#         return jsonify({'error': 'Unauthorized'}), 403
+    
+#     # For admin viewing user messages
+#     if current_user.is_admin:
+#         user = User.query.get_or_404(user_id)
+#         messages = Message.query.filter(
+#             ((Message.sender_id == user.id) & (Message.recipient_id == current_user.id)) |
+#             ((Message.sender_id == current_user.id) & (Message.recipient_id == user.id))
+#         ).order_by(Message.timestamp).all()
+#     else:
+#         # Regular user viewing their messages with admin
+#         admin = User.query.filter_by(is_admin=True).first()
+#         messages = Message.query.filter(
+#             ((Message.sender_id == current_user.id) & (Message.recipient_id == admin.id)) |
+#             ((Message.sender_id == admin.id) & (Message.recipient_id == current_user.id))
+#         ).order_by(Message.timestamp).all()
+    
+#     # Mark unread messages as read
+#     unread_messages = [m for m in messages if not m.is_read and m.recipient_id == current_user.id]
+#     for message in unread_messages:
+#         message.is_read = True
+    
+#     if unread_messages:
+#         db.session.commit()
+    
+#     return jsonify({
+#         'messages': [
+#             {
+#                 'id': message.id,
+#                 'content': message.content,
+#                 'sender_id': message.sender_id,
+#                 'recipient_id': message.recipient_id,
+#                 'is_read': message.is_read,
+#                 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+#                 'is_self': message.sender_id == current_user.id
+#             } for message in messages
+#         ]
+#     })
+
+@admin.route('/api/unread_count')
+@login_required
+def unread_count():
+    count = Message.query.filter_by(recipient_id=current_user.id, is_read=False).count()
+    return jsonify({'count': count})
+
+
+@admin.route('/admin/messages', methods=['GET'])
+def get_all_chats():
+    admin_id = session.get('user_id')
+    admin = User.query.get(admin_id)
+
+    if not admin or not admin.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    chats = Chat.query.all()
+    results = []
+
+    for chat in chats:
+        last_message = chat.messages.order_by(Message.timestamp.desc()).first()
+        results.append({
+            'chat_id': chat.id,
+            'user_id': chat.user_id,
+            'subject': chat.subject,
+            'last_message': last_message.content if last_message else "",
+            'unread_count': chat.messages.filter_by(is_read=False).count()
+        })
+
+    return jsonify(results)
+
+
+@admin.route('/send_message', methods=['POST'])
+def admin_send_message():
+    admin_id = current_user.id
+    admin = User.query.get(admin_id)
+
+    if not admin or not admin.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    chat_id = request.json.get('chat_id')
+    content = request.json.get('content')
+
+    if not content:
+        return jsonify({'error': 'Message is empty'}), 400
+
+    chat = Chat.query.get(chat_id)
+    if not chat:
+        return jsonify({'error': 'Chat not found'}), 404
+
+    message = Message(chat_id=chat.id, sender_id=admin_id, content=content)
+    db.session.add(message)
+    db.session.commit()
+
+    return jsonify({'message': 'Message sent'})
+
+
+@admin.route('/support')
+@login_required
 def support():
-    return render_template('admin/support.html')
+    user = current_user
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+
+    # Get users who have sent messages (excluding the admin)
+    user_ids = db.session.query(Message.sender_id).filter(Message.sender_id != current_user.id).distinct()
+    users = User.query.filter(User.id.in_(user_ids)).all()
+
+    return render_template('admin/admin_messages.html', user=user, users=users)
+
+@admin.route('/get_messages/<int:user_id>')
+@login_required
+def get_messages(user_id):
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    chat = Chat.query.filter_by(user_id=user_id).first()
+    if not chat:
+        return jsonify({'messages': []})
+
+    messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.timestamp.asc()).all()
+
+    return jsonify({
+        'messages': [
+            {
+                'sender_id': msg.sender_id,
+                'recipient_id': user_id if msg.sender_id == 1 else 1,
+                'content': msg.content
+            } for msg in messages
+        ]
+    })
+
+@admin.route('/chat_history/<int:user_id>')
+@login_required
+def chat_history(user_id):
+    if not current_user.is_admin:
+        abort(403)
+
+    chat = Chat.query.filter_by(user_id=user_id).first()
+    if not chat:
+        return jsonify([])
+
+    messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.created_at).all()
+    return jsonify([{
+        'sender_id': msg.sender_id,
+        'content': msg.content,
+        'timestamp': msg.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    } for msg in messages])
