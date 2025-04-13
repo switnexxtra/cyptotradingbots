@@ -874,30 +874,62 @@ def get_all_chats():
     return jsonify(results)
 
 
+# @admin.route('/send_message', methods=['POST'])
+# def admin_send_message():
+#     admin_id = current_user.id
+#     admin = User.query.get(admin_id)
+
+#     if not admin or not admin.is_admin:
+#         return jsonify({'error': 'Unauthorized'}), 403
+
+#     chat_id = request.json.get('chat_id')
+#     content = request.json.get('content')
+
+#     if not content:
+#         return jsonify({'error': 'Message is empty'}), 400
+
+#     chat = Chat.query.get(chat_id)
+#     if not chat:
+#         return jsonify({'error': 'Chat not found'}), 404
+
+#     message = Message(chat_id=chat.id, sender_id=admin_id, content=content)
+#     db.session.add(message)
+#     db.session.commit()
+
+#     return jsonify({'message': 'Message sent'})
+
 @admin.route('/send_message', methods=['POST'])
 def admin_send_message():
     admin_id = current_user.id
     admin = User.query.get(admin_id)
-
     if not admin or not admin.is_admin:
         return jsonify({'error': 'Unauthorized'}), 403
-
-    chat_id = request.json.get('chat_id')
+    
+    user_id = request.json.get('chat_id')  # This is actually the user_id from frontend
     content = request.json.get('content')
-
+    
     if not content:
         return jsonify({'error': 'Message is empty'}), 400
-
-    chat = Chat.query.get(chat_id)
+    
+    # Find or create a chat for this user
+    chat = Chat.query.filter_by(user_id=user_id).first()
     if not chat:
-        return jsonify({'error': 'Chat not found'}), 404
-
-    message = Message(chat_id=chat.id, sender_id=admin_id, content=content)
+        # Create a new chat for this user
+        chat = Chat(user_id=user_id, subject="Admin Support")
+        db.session.add(chat)
+        db.session.commit()
+    
+    # Create the message
+    message = Message(
+        chat_id=chat.id, 
+        sender_id=admin_id,
+        recipient_id=user_id,  # Add the recipient ID
+        content=content
+    )
     db.session.add(message)
     db.session.commit()
-
+    
     return jsonify({'message': 'Message sent'})
-
 
 @admin.route('/support')
 @login_required
