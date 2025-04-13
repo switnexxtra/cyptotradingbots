@@ -103,16 +103,19 @@ class Chat(db.Model):
     is_resolved = db.Column(db.Boolean, default=False)
     messages = db.relationship('Message', backref='chat', lazy='dynamic', order_by='Message.timestamp')
 
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id'))
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # required
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     is_read = db.Column(db.Boolean, default=False)
-    
-    sender = db.relationship('User', backref='sent_messages')
-    
+
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
+    recipient = db.relationship('User', foreign_keys=[recipient_id], backref='received_messages')
+
     
 class Deposit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -143,33 +146,6 @@ class PaymentMethods(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 
-# class Transaction(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     transaction_id = db.Column(db.Integer, unique=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     user = db.relationship('User', backref='transactions')  # Define the relationship
-#     transaction_type = db.Column(db.String(50), nullable=False)  # Deposit, Withdraw, Transfer
-#     transaction_detail = db.Column(db.String(100), nullable=False)  # Deposit, Withdraw, Transfer
-#     image_url = db.Column(db.String(255), nullable=True)  # Stores path to payment method image (e.g., QR code, bank logo)
-    
-#     # Correct the ForeignKey references
-#     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-#     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    
-#     amount = db.Column(db.Float, nullable=False)
-#     status = db.Column(db.String(20), default='pending')
-#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    
-#     # Correct relationships for sender and receiver
-#     sender = db.relationship('User', foreign_keys=[sender_id])
-#     receiver = db.relationship('User', foreign_keys=[receiver_id])
-
-
-#     def __init__(self, *args, **kwargs):
-#         if 'transaction_id' not in kwargs or kwargs['transaction_id'] is None:
-#             kwargs['transaction_id'] = generate_unique_id(Transaction, 'transaction_id')
-#         super().__init__(*args, **kwargs)
         
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -201,6 +177,7 @@ class Transaction(db.Model):
         if 'transaction_id' not in kwargs or kwargs['transaction_id'] is None:
             kwargs['transaction_id'] = generate_unique_id(Transaction, 'transaction_id')
         super().__init__(*args, **kwargs)
+
 
 class Loan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
