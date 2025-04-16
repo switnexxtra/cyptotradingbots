@@ -12334,6 +12334,14 @@ h5,
         font-size: 13px !important;
         line-height: 14px !important;
     }
+
+    .pin-contianer .profile-pin-header, .profile-pin-btn {
+        font-size: 15px !important;
+    }
+
+    .pin-contianer .profile-pin-btn {
+        font-size: 13px !important;
+    }
 }
 
 a[data-toggle="collapse"] {
