@@ -105,6 +105,25 @@
             opacity: 0;
             visibility: hidden;
         }
+
+        /* Extra assurance for small devices */
+        @media (max-width: 600px) {
+            #loading-overlay {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            .spinner {
+                width: 60px;
+                height: 60px;
+            }
+
+            .loader-container p {
+                font-size: 13px;
+            }
+        }
     </style>
     
     <!-- Stylesheets -->
@@ -140,9 +159,13 @@
     <script>
         AOS.init();
     </script>
-    {% endblock %}
 
     
+    {% endblock %}
+
+    <!-- Elfsight AI Chatbot | cyptostradingChatAI -->
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <div class="elfsight-app-940c3ffa-1963-478f-86b7-dcb5c7fddc50" data-elfsight-app-lazy></div>
 
     <!-- Bootstrap JS (include this before the closing </body> tag) -->
     <!-- Bootstrap Bundle with Popper -->
