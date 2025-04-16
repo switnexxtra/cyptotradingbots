@@ -133,7 +133,7 @@ def create_app(config_class=Config):
 app = create_app()  
 
 
-# Needed for Vercel - must be named 'app'
+# Needed for Vercel - must be named 'app' if you are hosting on Vercel, else it's not necessary
 application = app
 if __name__ == '__main__':
     socketio.run(app)
