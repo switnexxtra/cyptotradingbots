@@ -884,24 +884,36 @@
             .then(data => {
                 if (!data.message) {
                     console.error("Error sending message:", data);
+                    showToast('Message could not be saved to the server.', 'error');
                 }
             })
-            .catch(error => console.error('Request failed:', error));
-        
+            .catch(error => {
+                console.error('Request failed:', error);
+                showToast('Failed to send message to the server.', 'error');
+            });
 
-
-        // Send message to server
+        // Send message via WebSocket
         socket.emit('send_message', {
             sender_id: user_id,
-            recipient_id: admin_id, // Send to admin
+            recipient_id: admin_id,
             content: content
         });
 
-        
+        // Play send sound
+        playSendSound();
+
         // Clear and focus input
         messageInput.value = '';
         messageInput.focus();
     }
+
+    function playSendSound() {
+        const audio = new Audio('/static/Sendnotification.mp3'); // Adjust path as needed
+        audio.play().catch(err => {
+            console.warn('Send sound failed to play:', err);
+        });
+    }
+
 
     // Scroll chat to bottom
     function scrollToBottom() {
