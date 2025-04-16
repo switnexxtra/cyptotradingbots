@@ -33,34 +33,53 @@ def on_join(data):
     emit('joined', {'room': room})
 
 
+# @socketio.on('send_message')
+# def handle_send_message(data):
+#     sender_id = data['sender_id']
+#     recipient_id = data['recipient_id']
+#     content = data['content']
+
+#     # Get or create chat session
+#     chat = Chat.query.filter_by(user_id=recipient_id if sender_id == 1 else sender_id).first()
+#     if not chat:
+#         chat = Chat(user_id=recipient_id if sender_id == 1 else sender_id)
+#         db.session.add(chat)
+#         db.session.commit()
+
+#     # Save message
+#     message = Message(chat_id=chat.id, sender_id=sender_id, content=content)
+#     db.session.add(message)
+#     db.session.commit()
+
+#     # Only emit once to each unique room
+#     message_data = {
+#         'sender_id': sender_id,
+#         'recipient_id': recipient_id,
+#         'content': content
+#     }
+    
+#     # Create a set of unique rooms to avoid duplicate messages
+#     rooms = set([f"user_{recipient_id}", f"user_{sender_id}"])
+    
+#     # Emit to each unique room
+#     for room in rooms:
+#         emit('receive_message', message_data, room=room)
+
+
 @socketio.on('send_message')
 def handle_send_message(data):
     sender_id = data['sender_id']
     recipient_id = data['recipient_id']
     content = data['content']
 
-    # Get or create chat session
-    chat = Chat.query.filter_by(user_id=recipient_id if sender_id == 1 else sender_id).first()
-    if not chat:
-        chat = Chat(user_id=recipient_id if sender_id == 1 else sender_id)
-        db.session.add(chat)
-        db.session.commit()
-
-    # Save message
-    message = Message(chat_id=chat.id, sender_id=sender_id, content=content)
-    db.session.add(message)
-    db.session.commit()
-
-    # Only emit once to each unique room
+    # Prepare message data to send (not saving to database)
     message_data = {
         'sender_id': sender_id,
         'recipient_id': recipient_id,
         'content': content
     }
-    
-    # Create a set of unique rooms to avoid duplicate messages
+
+    # Emit to both sender and recipient rooms
     rooms = set([f"user_{recipient_id}", f"user_{sender_id}"])
-    
-    # Emit to each unique room
     for room in rooms:
         emit('receive_message', message_data, room=room)
