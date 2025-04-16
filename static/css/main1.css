@@ -388,3 +388,11 @@ button, .btn {
     margin-top: 30px;
   }
 }
+
+@media (max-width: 600px) {
+  .toggle-btn {
+    font-size: 15px !important;
+    background: #16D5FF !important;
+    padding: 5px 11px !important;
+  }
+}
