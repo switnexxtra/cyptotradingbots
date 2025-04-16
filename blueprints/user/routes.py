@@ -79,33 +79,65 @@ def chat():
     
     return render_template('user/chat.html', admin_id=admin.id)
 
-@user.route('/api/messages/<int:user_id>')
-@login_required
-def get_messages(user_id):
-    if user_id != current_user.id and not current_user.is_admin:
-        return jsonify({'error': 'Unauthorized'}), 403
+# @user.route('/api/messages/<int:user_id>')
+# @login_required
+# def get_messages(user_id):
+#     if user_id != current_user.id and not current_user.is_admin:
+#         return jsonify({'error': 'Unauthorized'}), 403
     
-    # Find the chat for this user
-    chat = Chat.query.filter_by(user_id=user_id).first()
+#     # Find the chat for this user
+#     chat = Chat.query.filter_by(user_id=user_id).first()
     
-    if not chat:
-        return jsonify({'messages': []})
+#     if not chat:
+#         return jsonify({'messages': []})
     
-    # Get all messages for this chat
-    messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.timestamp.asc()).all()
+#     # Get all messages for this chat
+#     messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.timestamp.asc()).all()
     
-    # Format messages for the client
-    admin = User.query.filter_by(is_admin=True).first()
-    message_list = [
-        {
-            'sender_id': msg.sender_id,
-            'recipient_id': admin.id if msg.sender_id == user_id else user_id,  # Admin ID is 1
-            'content': msg.content,
-            'timestamp': msg.timestamp.isoformat() if hasattr(msg, 'timestamp') else None
-        } for msg in messages
-    ]
+#     # Format messages for the client
+#     admin = User.query.filter_by(is_admin=True).first()
+#     message_list = [
+#         {
+#             'sender_id': msg.sender_id,
+#             'recipient_id': admin.id if msg.sender_id == user_id else user_id,  # Admin ID is 1
+#             'content': msg.content,
+#             'timestamp': msg.timestamp.isoformat() if hasattr(msg, 'timestamp') else None
+#         } for msg in messages
+#     ]
     
-    return jsonify({'messages': message_list})
+#     return jsonify({'messages': message_list})
+
+# @user.route('/send_message', methods=['POST'])
+# @login_required
+# def send_message():
+#     data = request.json
+    
+#     if not data or 'content' not in data:
+#         return jsonify({'error': 'Missing message content'}), 400
+    
+#     # Get the recipient (admin with ID 1)
+#     recipient_id = 1  # Default admin ID
+    
+#     # Find or create chat
+#     chat = Chat.query.filter_by(user_id=current_user.id).first()
+#     if not chat:
+#         chat = Chat(user_id=current_user.id)
+#         db.session.add(chat)
+#         db.session.commit()
+    
+#     # Create new message
+#     message = Message(
+#         chat_id=chat.id,
+#         sender_id=current_user.id,
+#         content=data['content']
+#     )
+    
+#     db.session.add(message)
+#     db.session.commit()
+    
+#     # Emit to socket (handled by your existing socket logic)
+    
+#     return jsonify({'success': True, 'message_id': message.id}) 
 
 @user.route('/send_message', methods=['POST'])
 @login_required
@@ -115,29 +147,58 @@ def send_message():
     if not data or 'content' not in data:
         return jsonify({'error': 'Missing message content'}), 400
     
-    # Get the recipient (admin with ID 1)
-    recipient_id = 1  # Default admin ID
+    # Default recipient is admin
+    recipient_id = 1  # Change this to dynamic if needed later
     
-    # Find or create chat
+    # Get or create chat
     chat = Chat.query.filter_by(user_id=current_user.id).first()
     if not chat:
         chat = Chat(user_id=current_user.id)
         db.session.add(chat)
         db.session.commit()
     
-    # Create new message
+    # Save message to DB
     message = Message(
         chat_id=chat.id,
         sender_id=current_user.id,
         content=data['content']
     )
-    
     db.session.add(message)
     db.session.commit()
     
-    # Emit to socket (handled by your existing socket logic)
+    # Optional: Emit via WebSocket if admin is online (handled by socket server separately)
     
-    return jsonify({'success': True, 'message_id': message.id}) 
+    return jsonify({'success': True, 'message_id': message.id})
+
+
+@user.route('/api/messages/<int:user_id>')
+@login_required
+def get_messages(user_id):
+    # Ensure only the correct user or an admin can fetch the chat
+    if user_id != current_user.id and not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    # Find chat
+    chat = Chat.query.filter_by(user_id=user_id).first()
+    if not chat:
+        return jsonify({'messages': []})
+
+    # Get all messages sorted by time
+    messages = Message.query.filter_by(chat_id=chat.id).order_by(Message.timestamp.asc()).all()
+    
+    # Provide full message history
+    message_list = [
+        {
+            'sender_id': msg.sender_id,
+            'recipient_id': 1 if msg.sender_id == user_id else user_id,  # Assuming admin ID is 1
+            'content': msg.content,
+            'timestamp': msg.timestamp.isoformat() if msg.timestamp else None
+        } for msg in messages
+    ]
+    
+    return jsonify({'messages': message_list})
+
+
 
 @user.route('/api/unread_count')
 @login_required
