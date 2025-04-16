@@ -1,26 +1,19 @@
 {% extends "base.html" %}
-{% block head %}
-<!-- Bootstrap Links -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-    integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
 
 
-<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/themify-icons.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/owl.carousel.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/kyc.css') }}" rel="stylesheet">
-
-<!-- Customized Bootstrap Stylesheet -->
-<!-- <link href="{{ url_for('static', filename='css/bootstrap.min1.css') }}" rel="stylesheet"> -->
-{% endblock %}
 {% block content %}
+    <!-- Bootstrap Links -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+
+    <link href="{{ url_for('static', filename='css/users_dashboard.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='css/kyc.css') }}" rel="stylesheet"> -->
+
 
     <div class="wrapper d-flex align-items-stretch">
 
@@ -42,6 +35,7 @@
                         ><span class="fa fa-book"></span>
                         Transaction history</a>
                 </li>
+
                 <li>
                     <a href="{{ url_for('user.profile') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-user-md"></span> Profile</a>
                 </li>
@@ -64,44 +58,7 @@
         <!-- Page Content  -->
         <div id="content" class="p-2 p-md-5">
 
-            <!-- <div class="profile-container d-flex justify-content-between align-items-center">
-                <div class="text-center">
-                    <p class="pt-2 user-name">Hello, <span> {{ user.username }}! </span></p>
-                </div>
             
-                <div class="d-flex align-items-center ms-auto">
-                    <i class="fa fa-bell fa-lg mx-2"></i>
-                    <i class="fa fa-envelope fa-lg mx-2"></i>
-                    <i class="fa fa-cog fa-lg mx-2"></i>
-                    {% if user.gender == 'male' %}
-                    <img src="{{ url_for('static', filename='img/male1.png') }}" class="rounded-circle l-bg-cherry" width="40"
-                        height="40" alt="Profile">
-                    {% elif user.gender == 'female' %}
-                    <img src="{{ url_for('static', filename='img/female.png') }}" class="rounded-circle l-bg-pink" width="40"
-                        height="40" alt="Profile">
-                    {% else %}
-                    <img src="{{ url_for('static', filename='img/gender.png') }}" class="rounded-circle l-bg-orange" width="40"
-                        height="40" alt="Profile">
-                    {% endif %}
-                </div>
-            </div> -->
-            
-            
-            
-            <!-- Nav Content  -->
-            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
-                <div class="container-fluid">
-            
-                    <button type="button" id="sidebarCollapse" class="btn toggle-btn">
-                        <i class="fa fa-bars"></i>
-                        <span class="sr-only">Toggle Menu</span>
-                    </button>
-            
-                    <div class="align-items-center text-center justify-content-center">
-                        <p class="pt-2 pr-3 balance">Balance: <span>$20k </span></p>
-                    </div>
-                </div>
-            </nav> -->
             {% include 'user/header.html' %}
 
 
@@ -179,12 +136,11 @@
                                 </div>
                             </form>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 pin-contianer">
                         <div class="p-3 py-5">
                             <form action="{{ url_for('user.update_pin') }}" method="post">
                                 <div class="d-flex justify-content-between align-items-center experience">
-                                    <span>Edit Transaction Pin</span>
-                                    <button class="border px-3 p-1 add-experience btn l-bg-green" type="submit"><i class="fa fa-pencil"></i>&nbsp;Edit Transaction Pin</button>
+                                    <h3 class="text-success profile-pin-header"><span class="text-success pl-4">Edit Transaction Pin</span></h3>
                                 </div>
                                 <br>
                                 <div class="col-md-12"><label class="labels">Add Transaction Pin</label>
@@ -195,75 +151,19 @@
                                     <input type="number" name="confirmpin" class="form-control" placeholder="confirm Transaction Pin"
                                         value="{{ user.additional_details }}" required>
                                 </div>
+
+                                <div class="col-md-12 p-4">
+                                    <button class="border px-3 p-1 add-experience btn l-bg-green profile-pin-btn" type="submit"> <i class="fa fa-check"></i>&nbsp; Edit
+                                        Transaction Pin
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- <div class="container rounded bg-white mt-5 mb-5">
-                <div class="row">
-                    <div class="col-md-3 border-right">
-                        <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
-                                width="150px"
-                                src="{{ url_for('static', filename='img/profile.jpg') }}"><span
-                                class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span>
-                            </span></div>
-                    </div>
-                    <div class="col-md-5 border-right">
-                        <div class="p-3 py-5">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="text-right">Profile Settings</h4>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control"
-                                        placeholder="first name" value=""></div>
-                                <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control"
-                                        value="" placeholder="surname"></div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
-                                        class="form-control" placeholder="enter phone number" value=""></div>
-                                <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text"
-                                        class="form-control" placeholder="enter address line 1" value=""></div>
-                                <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text"
-                                        class="form-control" placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control"
-                                        placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control"
-                                        placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control"
-                                        placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control"
-                                        placeholder="enter email id" value=""></div>
-                                <div class="col-md-12"><label class="labels">Education</label><input type="text"
-                                        class="form-control" placeholder="education" value=""></div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control"
-                                        placeholder="country" value=""></div>
-                                <div class="col-md-6"><label class="labels">State/Region</label><input type="text"
-                                        class="form-control" value="" placeholder="state"></div>
-                            </div>
-                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save
-                                    Profile</button></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="p-3 py-5">
-                            <div class="d-flex justify-content-between align-items-center experience"><span>Edit
-                                    Experience</span><span class="border px-3 p-1 add-experience"><i
-                                        class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
-                            <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
-                                    class="form-control" placeholder="experience" value=""></div> <br>
-                            <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
-                                    class="form-control" placeholder="additional details" value=""></div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- </div>
-            </div> -->
+            
             
         </div>
 
