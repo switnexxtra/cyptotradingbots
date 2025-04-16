@@ -131,6 +131,10 @@ def create_app(config_class=Config):
     return app
     
 app = create_app()  
+
+
+# Needed for Vercel - must be named 'app'
+application = app
 if __name__ == '__main__':
     socketio.run(app)
     
