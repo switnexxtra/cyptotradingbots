@@ -161,7 +161,8 @@ def create_app(config_class=Config):
         
     return app
 
+app = create_app()  # Ensure this line is at the bottom
+
 if __name__ == '__main__':
-    app = create_app()  # Ensure this line is at the bottom
-    socketio.run(app, debug=True)
+    socketio.run(app)
     
