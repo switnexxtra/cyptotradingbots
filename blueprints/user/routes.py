@@ -770,7 +770,7 @@ def claim_bonus():
 
         transaction = Transaction(
             user_id=user.id,
-            transaction_type="Loan Payment",
+            transaction_type="Bonus claim",
             transaction_detail=f"Bonus claim of ",
             amount=user.pending_bonus,
             status="completed",
