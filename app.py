@@ -9,6 +9,11 @@ from blueprints.user.routes import user
 from blueprints.admin.routes import admin
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
+from events import socketio
+import threading
+import time
+import requests
+
 
 
 def create_upload_folder(app):
@@ -25,6 +30,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db) 
     login_manager.init_app(app)
     mail.init_app(app)  # Initialize Flask-Mail
+    socketio.init_app(app)
     
     # Create upload folder before registering blueprints
     create_upload_folder(app)
@@ -122,17 +128,40 @@ def create_app(config_class=Config):
 
             db.session.commit()
 
-        # Set up the scheduler
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(check_overdue_loans, 'interval', days=1)  # Run every 24 hours
-        scheduler.add_job(update_user_balances, 'interval', days=1)
-        scheduler.start()
+    # Set up the scheduler
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(check_overdue_loans, 'interval', days=1)  # Run every 24 hours
+    scheduler.add_job(update_user_balances, 'interval', days=1)
+    scheduler.start()
             
-    return app
-    
-app = create_app()  
+    # Replace before_first_request with a more modern approach
+    @app.before_request
+    def before_request_func():
+        # This only needs to run once when the app starts
+        if not getattr(app, '_ping_thread_started', False):
+            app._ping_thread_started = True
+            threading.Thread(target=ping_self, daemon=True).start()
+            print("Ping thread started")
 
+    def ping_self():
+        # Your app URL - make sure this is correct
+        app_url = "https://cyptotradingbots.onrender.com/ping"
+        
+        while True:
+            try:
+                print(f"Pinging {app_url} to keep it awake...")
+                response = requests.get(app_url, timeout=10)
+                print(f"Ping successful: {response.status_code}")
+            except Exception as e:
+                print(f"Ping failed: {e}")
+            
+            # Sleep for 12 minutes (720 seconds)
+            time.sleep(720)
+
+        
+    return app
 
 if __name__ == '__main__':
-    socketio.run(app)
+    app = create_app()  # Ensure this line is at the bottom
+    socketio.run(app, debug=True)
     
