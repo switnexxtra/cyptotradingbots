@@ -6,7 +6,7 @@ main = Blueprint('main', __name__)
 @main.route('/')
 @main.route('/home')
 def home():
-    Company_name="YourCompanyName"
+    Company_name="Cryptotradingbot"
     return render_template('main/index.html', Company_name=Company_name)
 
 @main.route('/about')
@@ -59,3 +59,6 @@ def page_not_found():
     return render_template('main/404.html')
 
 
+@main.route('/ping')
+def ping():
+    return "I'm alive!", 200
