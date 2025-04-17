@@ -109,7 +109,12 @@
         /* Extra assurance for small devices */
         @media (max-width: 600px) {
             #loading-overlay {
-                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
                 justify-content: center;
                 align-items: center;
                 text-align: center;
@@ -167,24 +172,12 @@
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
     <div class="elfsight-app-940c3ffa-1963-478f-86b7-dcb5c7fddc50" data-elfsight-app-lazy></div>
 
-    <!-- Bootstrap JS (include this before the closing </body> tag) -->
-    <!-- Bootstrap Bundle with Popper -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script> -->
-    <!-- <script src="{{ url_for('static', filename='lib1/wow/wow.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib1/easing/easing.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib1/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib1/counterup/counterup.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib1/lightbox/js/lightbox.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib1/owlcarousel/owl.carousel.min.js') }}"></script> -->
 
     <!-- Template Javascript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
