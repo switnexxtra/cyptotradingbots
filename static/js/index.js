@@ -140,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const paymentInfo = document.getElementById("payment-info");
     const proceedButton = document.getElementById("proceed-button");
     const confirmButton = document.getElementById("confirm-button");
-    const paymentMethod = document.getElementById("payment-method").value;
 
     paymentMethodSelect.addEventListener("change", async function () {
         const selectedMethod = paymentMethodSelect.value;
@@ -155,10 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (!paymentMethod) {
-            alert("Please select a payment method.");
-            event.preventDefault(); // Stop form submission
-        }
 
         // Show loading animation
         paymentInfo.innerHTML = `
@@ -195,34 +190,59 @@ document.addEventListener("DOMContentLoaded", function () {
                             <p style="height: 20px; padding: 12px 0;" class="text-muted m-0">${data.details || 'N/A'}</p>
                         </div>
 
-                        ${data.account_name ? `<div style="height: 40px; padding: 7px 0; margin-top: 10px;">
+                        ${data.account_name ? `<div style="max-width: 500px; height: 40px; padding: 7px 0; margin-top: 10px;">
                             <strong>Account Name:</strong>
                             <p style="height: 20px; padding: 12px 0;" class="m-0">${data.account_name}</p>
                         </div>` : ""}
 
-                        ${data.account_number ? `<div style="height: 40px; padding: 7px 0; margin-top: 10px;">
+                        ${data.account_number ? `<div style="max-width: 500px; height: 40px; padding: 7px 0; margin-top: 10px;">
                             <strong>Account Number:</strong>
                             <p style="height: 20px; padding: 12px 0;" class="m-0">${data.account_number}</p>
                         </div>` : ""}
 
-                        ${data.bank_name ? `<div style="height: 40px; padding: 7px 0; margin-top: 10px;">
+                        ${data.bank_name ? `<div style="max-width: 500px; height: 40px; padding: 7px 0; margin-top: 10px;">
                             <strong>Bank Name:</strong>
                             <p style="height: 20px; padding: 12px 0;" class="m-0">${data.bank_name}</p>
                         </div>` : ""}
 
-                        ${data.wallet_address ? `<div class="" style="height: 40px; padding: 7px 0; margin-top: 10px;">
-                            <strong>Wallet Address:</strong>
-                            <p style="height: 20px; padding: 12px 0;" class="text-monospace mt-1">${data.wallet_address}</p>
-                        </div>` : ""}
+                        ${data.wallet_address ? `
+                            <div class="container-fluid px-2 mt-3">
+                                <strong>Wallet Address:</strong>
+                                <div class="row align-items-center pt-2 mt-2">
+                                    <div class="col-9 col-sm-10">
+                                        <p id="walletAddress" class="text-monospace mb-0 text-break" style="line-height: 1;">${data.wallet_address}</p>
+                                    </div>
+                                    <div class="col-3 col-sm-2 text-end">
+                                        <button type="button" onclick="copyingToClipboard('walletAddress')" class="btn btn-sm l-bg-pink w-100 radius-3"><i class="fa fa-copy"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
 
-                        ${data.memo ? `<div class="" style="height: 40px; padding: 7px 0; margin-top: 10px;">
-                            <strong>Memo:</strong>
-                            <p style="height: 20px; padding: 12px 0;" class="mt-1">${data.memo}</p>
-                        </div>` : ""}
+                        ${data.memo ? `
+                            <div class="container-fluid px-2 mt-3">
+                                <strong>Memo:</strong>
+                                <div class="row align-items-center pt-2 mt-2">
+                                    <div class="col-9 col-sm-10">
+                                        <p id="memoText" class="mb-0 text-break" style="line-height: 1;">${data.memo}</p>
+                                    </div>
+                                    <div class="col-3 col-sm-2 text-end">
+                                        <button type="button" onclick="copyingToClipboard('memoText')" class="btn btn-sm l-bg-pink w-100 radius-3"><i class="fa fa-copy"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+ 
+                        ${data.image_url ? `
+                            <div class="text-center mt-4">
+                                <img src="${data.image_url}" alt="Payment QR" class="img-fluid rounded shadow-sm" style="max-width: 200px;">
+                                <div class="mt-2">
+                                    <a href="${data.image_url}" download class="btn btn-sm btn-success">Download Image</a>
+                                </div>
+                            </div>
+                        ` : ''}
 
-                        ${data.image_url ? `<div class="text-center mt-3">
-                            <img src="${data.image_url}" alt="Payment QR" class="img-fluid rounded shadow-sm" style="max-width: 200px;">
-                        </div>` : ""}
+
                     </div>
                 </div>
             `;
@@ -230,11 +250,72 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Fetch error:', error);
             paymentInfo.innerHTML = `
                 <div class="alert alert-danger text-center p-3" role="alert">
-                    <strong>Error:</strong> ${error.message}
+                    <strong style="line-height: 1.8;">Error:</strong> ${error.message}
                 </div>
             `;
         }
     });
+
+
+    // Add this function in your JavaScript file
+    // Modern implementation using Clipboard API
+    function copyingToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const textToCopy = element.textContent || '';
+        
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+            showcopyToast('Copied to clipboard!');
+            })
+            .catch(err => {
+            console.error('Failed to copy: ', err);
+            showcopyToast('Failed to copy text');
+        });
+    }
+
+    // Toast function remains the same as in the previous example
+    function showcopyToast(message) {
+        // Create toast container if it doesn't exist
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.position = 'fixed';
+            toastContainer.style.top = '25px';
+            toastContainer.style.width = '200px';
+            toastContainer.style.right = '20px';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.style.width = '100px';
+        toast.style.maxWidth = '100px';
+        toast.style.backgroundColor = '#16D5FF'; 
+        toast.style.color = 'white';
+        toast.style.borderRadius = '4px';
+        toast.style.padding = '12px';
+        toast.style.marginBottom = '10px';
+        toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        toast.style.opacity = '1';
+        toast.style.transition = 'opacity 0.3s';
+        toast.textContent = message;
+        
+        // Add toast to container
+        toastContainer.appendChild(toast);
+        
+        // Remove toast after delay
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+            toastContainer.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
+
 
     proceedButton.addEventListener("click", function () {
         document.getElementById("modal-note").style.display = "block";
@@ -330,6 +411,74 @@ function showToast(message) {
     toast.show();
 }
 
+// Function to request audio permission on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Create a small UI element asking for permission
+  const permissionBar = document.createElement('div');
+  permissionBar.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#f8f9fa; padding:10px; text-align:center; box-shadow:0 -2px 10px rgba(0,0,0,0.1); z-index:1000;';
+  
+  permissionBar.innerHTML = `
+    <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
+      <span>Enable notification sounds?</span>
+      <button id="enable-audio" class="btn btn-sm btn-primary">Enable</button>
+      <button id="dismiss-audio-prompt" class="btn btn-sm btn-outline-secondary">No</button>
+    </div>
+  `;
+  
+  document.body.appendChild(permissionBar);
+  
+  // Handle enable button click
+  document.getElementById('enable-audio').addEventListener('click', function() {
+    // Create and play a silent audio file to get permission
+    const audio = new Audio('/static/notification.wav');
+    audio.volume = 0.1;
+    
+    audio.play()
+      .then(() => {
+        console.log('Audio permission granted');
+        // Store in localStorage that permission was granted
+        localStorage.setItem('audioPermissionGranted', 'true');
+        // Remove the permission bar
+        document.body.removeChild(permissionBar);
+      })
+      .catch(err => {
+        console.error('Failed to get audio permission:', err);
+        alert('Could not enable notification sounds. Your browser may require different settings.');
+      });
+  });
+  
+  // Handle dismiss button
+  document.getElementById('dismiss-audio-prompt').addEventListener('click', function() {
+    document.body.removeChild(permissionBar);
+    // Optionally store that the user dismissed the prompt
+    localStorage.setItem('audioPermissionDismissed', 'true');
+  });
+  
+  // Don't show the permission bar if the user has already granted permission
+  if (localStorage.getItem('audioPermissionGranted') === 'true') {
+    document.body.removeChild(permissionBar);
+  }
+  
+  // Don't show if user previously dismissed and it's been less than 7 days
+  const dismissedTime = localStorage.getItem('audioPermissionDismissedTime');
+  if (dismissedTime && (Date.now() - parseInt(dismissedTime)) < 7 * 24 * 60 * 60 * 1000) {
+    document.body.removeChild(permissionBar);
+  }
+});
+
+// Your original function, now it will work after permission is granted
+function playNotificationSound() {
+  // Only attempt to play if permission was previously granted
+  if (localStorage.getItem('audioPermissionGranted') === 'true') {
+    const audio = new Audio('/static/notification.wav');
+    audio.volume = 0.3;
+    audio.play().catch(error => {
+      console.log('Audio playback prevented:', error);
+      // Permission might have been revoked, remove from localStorage
+      localStorage.removeItem('audioPermissionGranted');
+    });
+  }
+}
 // Withdrawal Modal
 // document.addEventListener("DOMContentLoaded", function () {
 //     const withdrawButton = document.querySelector(".funds__cards.bg-primary a");
