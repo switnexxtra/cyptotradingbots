@@ -994,7 +994,7 @@
                                     </thead>
                                     <tbody>
                                         
-<!--                                         <tr>
+                                        <!-- <tr>
                                             <th scope="row">1</th>
                                             <td>Mark</td>
                                             <td>02-05-2025</td>
@@ -1227,6 +1227,66 @@
                     const toast = new bootstrap.Toast(document.getElementById('copyReff'));
                     toast.show();
                 });
+            }
+        </script>
+
+
+        <script>
+            // Modern implementation using Clipboard API
+            function copyingToClipboard(elementId) {
+                const element = document.getElementById(elementId);
+                const textToCopy = element.textContent || '';
+
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showcopyToast('Copied to clipboard!');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        showcopyToast('Failed to copy text');
+                    });
+            }
+
+            // Toast function remains the same as in the previous example
+            function showcopyToast(message) {
+                // Create toast container if it doesn't exist
+                let toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.style.position = 'fixed';
+                    toastContainer.style.top = '25px';
+                    toastContainer.style.right = '20px';
+                    toastContainer.style.width = '300px';
+                    toastContainer.style.zIndex = '9999';
+                    document.body.appendChild(toastContainer);
+                }
+
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.className = 'toast show';
+                toast.style.width = '300px';
+                toast.style.maxWidth = '300px';
+                toast.style.backgroundColor = '#16D5FF'; 
+                toast.style.color = 'white';
+                toast.style.borderRadius = '4px';
+                toast.style.padding = '12px';
+                toast.style.marginBottom = '10px';
+                toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                toast.style.opacity = '1';
+                toast.style.transition = 'opacity 0.3s';
+                toast.textContent = message;
+
+                // Add toast to container
+                toastContainer.appendChild(toast);
+
+                // Remove toast after delay
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => {
+                        toastContainer.removeChild(toast);
+                    }, 300);
+                }, 3000);
             }
         </script>
     {% endblock %}
