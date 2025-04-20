@@ -522,8 +522,7 @@
                     Home</a>
             </li>
             <li>
-                <a href="{{ url_for('user.investment') }}" class="text-success text-decoration-none"
-                    style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span
+                <a href="{{ url_for('user.investment') }}" class="text-decoration-none"><span
                         class="fa fa-handshake"></span>
                     Investment</a>
             </li>
@@ -546,7 +545,7 @@
             </li>
 
             <li>
-                <a href="{{ url_for('user.support') }}" class="text-decoration-none"><span class="fa fa-support"></span>
+                <a href="{{ url_for('user.support') }}" class="text-success text-decoration-none" style="background-color: #FFFFFF; opacity: .7; border-radius:3px;"><span class="fa fa-support"></span>
                     Support</a>
             </li>
             <li>
@@ -673,6 +672,7 @@
 
                     // Render messages with date separators
                     renderMessageGroups(messagesByDate);
+                    playNotificationSound();
 
                     // Add initial welcome message if this is a new conversation
                     if (data.messages.length <= 1) {
@@ -951,6 +951,24 @@
         }, 3000);
     }
 
+    // Request permission when page loads
+    function setupAudioPermission() {
+        const button = document.createElement('button');
+        button.textContent = 'Enable Notifications';
+        button.onclick = function () {
+            const audio = new Audio('/static/notification.wav');
+            audio.volume = 0.1;
+            audio.play().then(() => {
+                // Permission granted!
+                console.log('Audio permission granted');
+                // Now you can play sounds later
+                document.body.removeChild(button);
+            }).catch(err => {
+                console.error('Failed to get audio permission:', err);
+            });
+        };
+        document.body.appendChild(button);
+    }
     // Play notification sound
     function playNotificationSound() {
         // Create audio element for notification sound
