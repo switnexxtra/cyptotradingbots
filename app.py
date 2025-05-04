@@ -155,8 +155,8 @@ def create_app(config_class=Config):
             except Exception as e:
                 print(f"Ping failed: {e}")
             
-            # Sleep for 12 minutes (720 seconds)
-            time.sleep(3300)
+            # Sleep for 12 minutes (5500 seconds)
+            time.sleep(5500)
 
         
     return app
