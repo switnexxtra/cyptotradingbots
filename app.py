@@ -156,7 +156,7 @@ def create_app(config_class=Config):
                 print(f"Ping failed: {e}")
             
             # Sleep for 12 minutes (720 seconds)
-            time.sleep(720)
+            time.sleep(3300)
 
         
     return app
